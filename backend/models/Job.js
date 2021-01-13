@@ -10,10 +10,12 @@ const JobSchema = new Schema({
     recruiter: {
         name: {
             type: String,
+            ref: 'Recruiter',
             required: true
         },
         email: {
             type: String,
+            ref: 'Recruiter',
             required: true,
             lowecase: true,
             match: /\S+@\S+\.\S+/
@@ -68,4 +70,4 @@ const JobSchema = new Schema({
     { timestamp: true }
 );
 
-module.exports = Jobs = mongoose.model("Jobs", JobSchema);
+module.exports = Job = mongoose.model("Job", JobSchema);

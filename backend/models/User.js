@@ -15,35 +15,19 @@ const UserSchema = new Schema({
 		match: /\S+@\S+\.\S+/
 	},
 	contactNum: {
-		type: Number,
+		type: String,
 		required: true
 	},
 	bio: {
 		type: String,
 		required: true
 	},
-	hashed_password: {
-		type: String,
-		required: true
-	},
-	salt: String,
-	about: {
-		type: String
-	},
-	role: {
-		type: Number,
-		trim: true
-	},
-	photo: {
-		data: Buffer,
-		contentType: String
-	},
-	resetPasswordLink: {
-		data: String,
-		default: ''
+	date: {
+		type: Date,
+		default: Date.now
 	}
 },
 	{ timestamp: true }
 );
 
-module.exports = User = mongoose.model("Users", UserSchema);
+module.exports = User = mongoose.model("User", UserSchema);

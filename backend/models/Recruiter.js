@@ -23,4 +23,4 @@ const RecruiterSchema = new Schema({
     }
 });
 
-module.exports = Recruiter = mongoose.model("Recruiters", RecruiterSchema);
+module.exports = Recruiter = mongoose.model("Recruiter", RecruiterSchema);

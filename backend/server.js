@@ -24,8 +24,12 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 // routes
 var UserRouter = require("./routes/users");
 var JobsRouter = require("./routes/jobs");
+var JobsRouter = require("./routes/jobs");
+var JobsRouter = require("./routes/jobs");
 
 // setup API endpoints
+app.use("/user", UserRouter);
+app.use("/user", UserRouter);
 app.use("/user", UserRouter);
 app.use("/jobs", JobsRouter);
 

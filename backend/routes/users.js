@@ -2,16 +2,16 @@ var express = require("express");
 var router = express.Router();
 
 // Load User model
-const User = require("../models/Users");
+const User = require("../models/User");
 
 // GET request 
 // Getting all the users
 router.get("/", function (req, res) {
-    User.find(function (err, users) {
+    User.find(function (err, user) {
         if (err) {
             console.log(err);
         } else {
-            res.json(users);
+            res.json(user);
         }
     })
 });
@@ -24,6 +24,8 @@ router.post("/register", (req, res) => {
     const newUser = new User({
         name: req.body.name,
         email: req.body.email,
+        contactNum: req.body.contactNum,
+        bio: req.body.bio,
         date: req.body.date
     });
 

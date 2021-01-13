@@ -2,16 +2,16 @@ var express = require("express");
 var router = express.Router();
 
 // Load Jobs model
-const Jobs = require("../models/Jobs");
+const Job = require("../models/Job");
 
 // GET request 
 // Get ALL the Jobs
 router.get("/", (req, res) => {
-    Jobs.find((err, jobs) => {
+    Job.find((err, job) => {
         if (err) {
             console.log(err);
         } else {
-            res.json(jobs);
+            res.json(job);
         }
     })
 });
@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
 // Add a new job to db
 // @access Recruiter
 router.post("/addnew", (req, res) => {
-    const newJob = new Jobs({
+    const newJob = new Job({
         title: req.body.title,
         recruiter: { name: req.body.recruiter.name, email: req.body.recruiter.email },
         maxApplicants: Number(req.body.maxApplicants),
@@ -32,7 +32,7 @@ router.post("/addnew", (req, res) => {
         typeOfJob: req.body.typeOfJob,
         duration: Number(req.body.duration),
         salary: Number(req.body.salary),
-        rating: req.body.rating
+        rating: Number(req.body.rating)
     });
 
     newJob.save()
@@ -40,7 +40,7 @@ router.post("/addnew", (req, res) => {
             res.status(200).json(job);
         })
         .catch(err => {
-            res.status(400).send("hi" + err);
+            res.status(400).send(err);
         });
 });
 
@@ -59,7 +59,7 @@ router.post("/addnew", (req, res) => {
 // Delete a job
 // @access Recruiter
 router.delete("/:id", (req, res) => {
-    Jobs.findById(req.params.id)
+    Job.findById(req.params.id)
         .then(job => job.remove().then(() => res.json({ success: true, desc: 'job deleted successfuly' })))
         .catch(err => res.status(404).json({ success: false, desc: 'job not deleted' }))
 });
