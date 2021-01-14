@@ -13,6 +13,10 @@ const RecruiterSchema = new Schema({
         lowercase: true,
         unique: true
     },
+    password: {
+        type: String,
+        required: true
+    },
     contactNum: {
         type: Number,
         required: true

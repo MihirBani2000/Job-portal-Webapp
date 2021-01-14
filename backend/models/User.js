@@ -22,10 +22,14 @@ const UserSchema = new Schema({
 		type: String,
 		required: true
 	},
-	date: {
-		type: Date,
-		default: Date.now
+	password: {
+		type: String,
+		required: true
 	}
+	// date: {
+	// 	type: Date,
+	// 	default: Date.now
+	// }
 },
 	{ timestamp: true }
 );

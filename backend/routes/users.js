@@ -1,8 +1,12 @@
 var express = require("express");
 var router = express.Router();
 
-// Load User model
+// Load models
+const Job = require("../models/Job");
 const User = require("../models/User");
+const Recruiter = require("../models/Recruiter");
+const Applicant = require("../models/Applicant");
+const Application = require("../models/Application");
 
 // GET request 
 // Getting all the users
@@ -16,7 +20,6 @@ router.get("/", function (req, res) {
     })
 });
 
-// NOTE: Below functions are just sample to show you API endpoints working, for the assignment you may need to edit them
 
 // POST request 
 // Add a user to db

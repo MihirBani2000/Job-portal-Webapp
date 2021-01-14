@@ -8,6 +8,11 @@ const JobSchema = new Schema({
         required: true
     },
     recruiter: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Recruiter',
+            required: true
+        },
         name: {
             type: String,
             ref: 'Recruiter',

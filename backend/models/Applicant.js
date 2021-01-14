@@ -1,7 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-// Create Schema
+// Create Education Schema
+const EducationSchema = new Schema({
+    instituteName: {
+        type: String,
+        required: true
+    },
+    startYear: {
+        type: Date,
+        required: true
+    },
+    endYear: {
+        type: Date
+    }
+});
+
+// Create Applicant Schema 
 const ApplicantSchema = new Schema({
     name: {
         type: String,
@@ -14,19 +29,11 @@ const ApplicantSchema = new Schema({
         unique: true,
         match: /\S+@\S+\.\S+/
     },
-    education: {
-        instituteName: {
-            type: String,
-            required: true
-        },
-        startYear: {
-            type: Date,
-            required: true
-        },
-        endYear: {
-            type: Date
-        }
+    password: {
+        type: String,
+        required: true
     },
+    education: EducationSchema,
     skills: {
         type: [String],
         required: true

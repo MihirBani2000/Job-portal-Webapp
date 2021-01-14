@@ -4,6 +4,8 @@ var router = express.Router();
 // Load Jobs model
 const Job = require("../models/Job");
 
+// @access Applicant
+
 // GET request 
 // Get ALL the Jobs
 router.get("/", (req, res) => {
@@ -17,13 +19,15 @@ router.get("/", (req, res) => {
 });
 
 
+// @access Recruiter
+
 // POST request 
 // Add a new job to db
-// @access Recruiter
-router.post("/addnew", (req, res) => {
+router.post("/by_recruiter/addnew", (req, res) => {
+    // const recruiterId = result.id
     const newJob = new Job({
         title: req.body.title,
-        recruiter: { name: req.body.recruiter.name, email: req.body.recruiter.email },
+        recruiter: { id: req.body.recruiter.id, name: req.body.recruiter.name, email: req.body.recruiter.email },
         maxApplicants: Number(req.body.maxApplicants),
         maxPositions: Number(req.body.maxPositions),
         DOPost: req.body.DOPost,
@@ -45,20 +49,20 @@ router.post("/addnew", (req, res) => {
 });
 
 
-// // Get request 
-// // Get a job by id
-// // @access Public
-// router.get("/:id", (req, res) => {
-//     Jobs.findById(req.params.id)
-//         .then(job => job.remove().then(() => res.json({ success: true, desc: 'job deleted successfuly' })))
-//         .catch(err => res.status(404).json({ success: false, desc: 'job not deleted' }))
-// });
+// GET request 
+// Get ALL the Jobs by recruiter
+router.get("/by_recruiter", (req, res) => {
+    Job.find((err, job) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(job);
+        }
+    })
+});
 
-
-// Delete request 
-// Delete a job
-// @access Recruiter
-router.delete("/:id", (req, res) => {
+// Delete a job by id
+router.delete("/by_recruiter/:id", (req, res) => {
     Job.findById(req.params.id)
         .then(job => job.remove().then(() => res.json({ success: true, desc: 'job deleted successfuly' })))
         .catch(err => res.status(404).json({ success: false, desc: 'job not deleted' }))
