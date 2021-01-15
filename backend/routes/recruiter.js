@@ -135,16 +135,47 @@ router.put("/:id/jobs/:jobid/edit", (req, res) => {
 router.delete("/:id/jobs/:jobid/delete", (req, res) => {
     const recruiterId = req.params.id;
     const jobId = req.params.jobid;
-    Application
-        .find({ jobId: jobId })
-        .then(job => job.remove().then(() => res.json({ success: true, desc: 'application deleted successfuly' })))
-        .catch(err => res.status(404).json({ success: false, desc: 'application not deleted, because not found' }))
 
-    Job
-        .find({ "recruiter.id": recruiterId, "_id": jobId })
-        .then(job => job.remove().then(() => res.json({ success: true, desc: 'job deleted successfuly' })))
-        .catch(err => res.status(404).json({ success: false, desc: 'job not deleted, because not found' }))
+    Job.find(
+        { "recruiter.id": recruiterId, "_id": jobId },
+        (err, job) => {
+            if (err) return res.json(err);
+            else {
+                Application
+                    .deleteMany({ jobId: jobId })
+                    .then(query => console.log(query))
+                    .catch(err => console.log(err));
+                Job
+                    .findByIdAndDelete(jobId)
+                    .then(jobq => res.json({ success: true, desc: jobq }))
+                    .catch(err => res.json({ success: false, desc: err }))
+                return res.json(job)
+            }
+        }
+    );
+
 });
 
+
+
+// testing feature
+router.get("/:id/jobs/:jobid/get", (req, res) => {
+    const recruiterId = req.params.id;
+    const jobId = req.params.jobid;
+    Job.find(
+        { "recruiter.id": recruiterId, "_id": jobId },
+        (err, job) => {
+            if (err) return res.json(err);
+            else {
+                Application
+                    .find()
+                    .then(query => console.log(query))
+                    .catch(err => console.log(err));
+                return res.json(job)
+            }
+        }
+    );
+
+});
 
 module.exports = router;

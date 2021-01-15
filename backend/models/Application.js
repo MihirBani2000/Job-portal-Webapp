@@ -20,4 +20,5 @@ const ApplicationSchema = new Schema({
 
 });
 
+
 module.exports = Application = mongoose.model("Application", ApplicationSchema);
