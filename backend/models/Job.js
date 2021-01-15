@@ -88,18 +88,18 @@ const JobSchema = new Schema({
 //         })
 // })
 
-// JobSchema.pre('find', () => {
-//     console.log("inside find pre hook");
-//     Application
-//         .find(
-//             // { jobId: "6000a445cfeb6903f09e91b0" },
-//             (err, query) => {
-//                 if (err) return console.log("err")
-//                 else
-//                     return console.log(query)
-//             }
-//         )
-//     // .exec();
+// JobSchema.pre('find', false, () => {
+//     console.log("inside find pre hook", this);
+//     // Application
+//     //     .find(
+//     //         { jobId: "60016140e9a0105c6ceed6a4" }
+//     //     )
+//     //     .exec(
+//     //         (err, query) => {
+//     //             if (err) return console.log("err")
+//     //             else return console.log(query, this._id)
+//     //         }
+//     //     )
 //     console.log("after find pre hook");
 // });
 

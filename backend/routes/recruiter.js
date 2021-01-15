@@ -158,24 +158,82 @@ router.delete("/:id/jobs/:jobid/delete", (req, res) => {
 
 
 
-// testing feature
-router.get("/:id/jobs/:jobid/get", (req, res) => {
+// GET request
+// To get all the applications on the job
+router.get("/:id/jobs/:jobid/applications", (req, res) => {
     const recruiterId = req.params.id;
     const jobId = req.params.jobid;
-    Job.find(
-        { "recruiter.id": recruiterId, "_id": jobId },
-        (err, job) => {
-            if (err) return res.json(err);
-            else {
-                Application
-                    .find()
-                    .then(query => console.log(query))
-                    .catch(err => console.log(err));
-                return res.json(job)
-            }
-        }
-    );
+    // Job.find(
+    //     { "recruiter.id": recruiterId, "_id": jobId },
+    //     (err, job) => {
+    //         if (err) return console.log(err)
+    //         else {
+    //             Application
+    //                 .find({ jobId: jobId })
+    //                 .populate('applicantId')
+    //                 .then(application => res.json(application))
+    //                 .catch(err => console.log(err))
+    //             res.json(job)
+    //         }
+    //     }
+    // );
+    Application
+        .find({ jobId: jobId })
+        .populate('applicantId').populate('jobId')
+        .then(application => res.json(application))
+        .catch(err => console.log(err))
+});
 
+
+// GET request
+// To get all the accepted applications on the job
+router.get("/:id/jobs/:jobid/applications/accepted", (req, res) => {
+    const recruiterId = req.params.id;
+    const jobId = req.params.jobid;
+    Application
+        .find({ jobId: jobId, status: "accepted" })
+        .populate('applicantId').populate('jobId')
+        .then(application => res.json(application))
+        .catch(err => console.log(err))
+});
+
+
+
+// POST request
+// To change the status of the application
+router.post("/:id/jobs/:jobid/applications/:status", (req, res) => {
+    const recruiterId = req.params.id;
+    const jobId = req.params.jobid;
+    const newStatus = req.params.status;
+
+    if (newStatus === "accepted") {
+        Application
+            .findOneAndUpdate({ jobId: jobId, status: { $in: ["applied", "shortlisted"] } }, { status: newStatus })
+            .then(application => res.json(application))
+            .catch(err => res.json(err))
+    } else if (newStatus === "shortlisted") {
+        Application
+            .findOneAndUpdate({ jobId: jobId, status: { $in: ["applied"] } }, { status: newStatus })
+            .then(application => res.json(application))
+            .catch(err => res.json(err))
+    } else {
+        Application
+            .findOneAndUpdate({ jobId: jobId }, { status: newStatus })
+            .then(application => res.json(application))
+            .catch(err => res.json(err))
+    }
+});
+
+// DELETE request
+// To delete a rejected application
+router.delete("/:id/jobs/:jobid/applications/rejected", (req, res) => {
+    const recruiterId = req.params.id;
+    const jobId = req.params.jobid;
+
+    Application
+        .findOneAndDelete({ jobId: jobId, status: "rejected" })
+        .then(application => res.json(application))
+        .catch(err => res.json(err))
 });
 
 module.exports = router;

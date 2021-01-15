@@ -16,6 +16,11 @@ const ApplicationSchema = new Schema({
     sop: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        default: "applied",
+        enum: ["applied", "accepted", "shortlisted", "rejected"]
     }
 
 });
