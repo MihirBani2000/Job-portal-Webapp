@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth = require('../middleware/auth')
 
 // Load models
 const Job = require("../models/Job");

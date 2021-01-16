@@ -1,0 +1,6 @@
+{
+    "mongoURI": "mongodb+srv://mihir:mihir20son@cluster0.gmno9.mongodb.net/mern_app_db?retryWrites=true&w=majority",
+    "jwtSecret": "myNameIsMihirOrIsIt",
+    "backendPort": 4000,
+    "tokenExpiry": 10368000
+}

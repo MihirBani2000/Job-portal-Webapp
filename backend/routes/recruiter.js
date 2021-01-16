@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth = require('../middleware/auth')
 
 // Load models
 const Job = require("../models/Job");
@@ -184,6 +185,33 @@ router.get("/:id/jobs/:jobid/applications", (req, res) => {
         .catch(err => console.log(err))
 });
 
+
+// TESTING
+// GET request
+// To get all the applications on the job
+// router.get("/:id/jobs/:jobid/testing", (req, res) => {
+//     const recruiterId = req.params.id;
+//     const jobId = req.params.jobid;
+//     Job.find(
+//         { "recruiter.id": recruiterId, "_id": jobId },
+//         (err, job) => {
+//             if (err) return console.log(err)
+//             else {
+//                 // Application
+//                 //     .find({ jobId: jobId })
+//                 //     .populate('applicantId')
+//                 //     .then(application => res.json(application))
+//                 //     .catch(err => console.log(err))
+//                 res.json(job)
+//             }
+//         }
+//     );
+//     //     Application
+//     //         .find({ jobId: jobId })
+//     //         .populate('applicantId').populate('jobId')
+//     //         .then(application => res.json(application))
+//     //         .catch(err => console.log(err))
+// });
 
 // GET request
 // To get all the accepted applications on the job

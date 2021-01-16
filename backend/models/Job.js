@@ -88,18 +88,19 @@ const JobSchema = new Schema({
 //         })
 // })
 
-// JobSchema.pre('find', false, () => {
+// JobSchema.pre('find', (next) => {
 //     console.log("inside find pre hook", this);
-//     // Application
-//     //     .find(
-//     //         { jobId: "60016140e9a0105c6ceed6a4" }
-//     //     )
-//     //     .exec(
-//     //         (err, query) => {
-//     //             if (err) return console.log("err")
-//     //             else return console.log(query, this._id)
-//     //         }
-//     //     )
+//     Application
+//         .find(
+//             { jobId: this._id }
+//         )
+//         .exec(
+//             (err, query) => {
+//                 if (err) return console.log("err")
+//                 else return console.log(query, this._id)
+//             }
+//         )
+//     next()
 //     console.log("after find pre hook");
 // });
 
