@@ -22,18 +22,16 @@ connection.once('open', function () {
 })
 
 // routes
-// var UserRouter = require("./routes/users");
+// var AuthOldRouter = require("./routes/auth_old");
 var JobsRouter = require("./routes/jobs");
 var AuthRouter = require("./routes/auth");
-var TRYAuthRouter = require("./routes/try_auth");
 var RecruiterRouter = require("./routes/recruiter");
 var ApplicantRouter = require("./routes/applicant");
 
 // setup API endpoints
-// app.use("/user", UserRouter);
+// app.use("/oldauth", AuthOldRouter);
 app.use("/jobs", JobsRouter);
 app.use("/auth", AuthRouter);
-app.use("/tryauth", TRYAuthRouter);
 app.use("/recruiter", RecruiterRouter);
 app.use("/applicant", ApplicantRouter);
 
