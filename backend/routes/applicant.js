@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth = require('../middleware/auth')
 
 // Load models
 const Job = require("../models/Job");
@@ -22,8 +23,9 @@ router.get("/", (req, res) => {
 });
 
 // Get request
-// Get all the attributes of one aapplicant by id
-router.get("/:id/profile", (req, res) => {
+// Get all the attributes of one applicant by id
+// @access Protected - by applicant
+router.get("/:id/profile", auth, (req, res) => {
     Applicant.findById(req.params.id, (err, applicant) => {
         if (err) {
             console.log(err);

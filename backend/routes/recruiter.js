@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth = require('../middleware/auth')
 
 // Load models
 const Job = require("../models/Job");
@@ -7,6 +8,8 @@ const Recruiter = require("../models/Recruiter");
 const Applicant = require("../models/Applicant");
 const Application = require("../models/Application");
 
+// load validators
+const { validateJobData } = require('../validation/jobs')
 
 // Get request
 // Get all the recruiters
@@ -68,6 +71,12 @@ router.get("/:id/jobs/", (req, res) => {
 // POST request 
 // Add a new job to db by a particular recruiter (id)
 router.post("/:id/jobs/addnew/", (req, res) => {
+    // VALIDATION
+    const { errors, isValid } = validateJobData(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
     const recruiterId = req.params.id;
     const newJob = new Job({
         title: req.body.title,
@@ -78,7 +87,7 @@ router.post("/:id/jobs/addnew/", (req, res) => {
         },
         maxApplicants: Number(req.body.maxApplicants),
         maxPositions: Number(req.body.maxPositions),
-        DOPost: req.body.DOPost,
+        // DOPost: req.body.DOPost,
         DOApp: req.body.DOApp,
         skills: req.body.skills,
         typeOfJob: req.body.typeOfJob,
@@ -184,6 +193,33 @@ router.get("/:id/jobs/:jobid/applications", (req, res) => {
         .catch(err => console.log(err))
 });
 
+
+// TESTING
+// GET request
+// To get all the applications on the job
+// router.get("/:id/jobs/:jobid/testing", (req, res) => {
+//     const recruiterId = req.params.id;
+//     const jobId = req.params.jobid;
+//     Job.find(
+//         { "recruiter.id": recruiterId, "_id": jobId },
+//         (err, job) => {
+//             if (err) return console.log(err)
+//             else {
+//                 // Application
+//                 //     .find({ jobId: jobId })
+//                 //     .populate('applicantId')
+//                 //     .then(application => res.json(application))
+//                 //     .catch(err => console.log(err))
+//                 res.json(job)
+//             }
+//         }
+//     );
+//     //     Application
+//     //         .find({ jobId: jobId })
+//     //         .populate('applicantId').populate('jobId')
+//     //         .then(application => res.json(application))
+//     //         .catch(err => console.log(err))
+// });
 
 // GET request
 // To get all the accepted applications on the job
