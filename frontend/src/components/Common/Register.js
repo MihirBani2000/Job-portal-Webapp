@@ -1,74 +1,33 @@
-import React, {Component} from 'react';
+import React, { Component, useState } from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import axios from 'axios';
+import RegisterApplicant from './RegisterApplicant';
+import RegisterRecruiter from './RegisterRecruiter';
+import { Button } from 'reactstrap';
 
-export default class Register extends Component {
-    
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            name: '',
-            email: '',
-            date:null
-        }
+const Register = () => {
+    const [userType, setUserType] = useState("");
+    return (
+        <div>
+            <h1>Hi there, register here</h1>
+            {/* { if(userType === '') {
 
-        this.onChangeUsername = this.onChangeUsername.bind(this);
-        this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-    
-    onChangeUsername(event) {
-        this.setState({ name: event.target.value });
-    }
+            }}
+            <Button onClick={() => { setUserType("recruiter") }} color="primary" size="lg">Recruiter</Button>{'       '}
+            <Button onClick={() => { setUserType("applicant") }} color="secondary" size="lg">Applicant</Button> */}
+            <div className="container mt-5">
 
-    onChangeEmail(event) {
-        this.setState({ email: event.target.value });
-    }
-
-    onSubmit(e) {
-        e.preventDefault();
-
-        const newUser = {
-            name: this.state.name,
-            email: this.state.email,
-            date: Date.now()
-        }
-        axios.post('http://localhost:4000/user/register', newUser)
-             .then(res => {alert("Created\t" + res.data.name);console.log(res.data)})
-             ;
-
-        this.setState({
-            name: '',
-            email: '',
-            date:null
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>Username: </label>
-                        <input type="text" 
-                               className="form-control" 
-                               value={this.state.name}
-                               onChange={this.onChangeUsername}
-                               />
+                <div className="row">
+                    <div className="col-12 d-flex flex-column flex-md-row justify-content-center">
+                        <Link to="/register/recruiter" className="shadow-move btn red mx-md-2 my-2 my-md-0">Register as Recruiter</Link>
+                        <Link to="/register/applicant" className="shadow-move btn muave mx-md-2 my-2 my-md-0">Register as Applicant</Link>
+                        <Link to="/login" className="shadow-move btn light-grey mx-md-2 my-2 my-md-0">Login</Link>
                     </div>
-                    <div className="form-group">
-                        <label>Email: </label>
-                        <input type="text" 
-                               className="form-control" 
-                               value={this.state.email}
-                               onChange={this.onChangeEmail}
-                               />  
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Register" className="btn btn-primary"/>
-                    </div>
-                </form>
+                </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
+
+export default Register;

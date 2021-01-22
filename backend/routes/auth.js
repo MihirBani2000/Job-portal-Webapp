@@ -6,21 +6,24 @@ const jwt = require('jsonwebtoken')
 const auth = require('../middleware/auth')
 
 // Load models
-const Job = require("../models/Job");
 const Recruiter = require("../models/Recruiter");
 const Applicant = require("../models/Applicant");
-const Application = require("../models/Application");
 
 // load validators
 const { validateLoginData } = require('../validation/login')
 const { validateApplicantRegister, validateRecruiterRegister } = require('../validation/register')
 
+// LOGIN
+
 // function for checking and validating password
-const validatePasswordLogin = (user, password) => {
+const validatePasswordLogin = (user, password, type, res) => {
     bcrypt.compare(password, user.password)
         .then(isMatch => {
-            if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" })
-
+            if (!isMatch) {
+                let error = {}
+                error.password = "Invalid credentials";
+                return res.status(400).json(error)
+            }
             jwt.sign(
                 { id: user.id },
                 config.get('jwtSecret'),
@@ -32,7 +35,8 @@ const validatePasswordLogin = (user, password) => {
                         user: {
                             id: user.id,
                             name: user.name,
-                            email: user.email
+                            email: user.email,
+                            type: type
                         }
                     })
                 }
@@ -41,12 +45,10 @@ const validatePasswordLogin = (user, password) => {
 }
 
 
-// APPLICANTS 
-
-// @Post request - /login/applicant
-// Login/Authenticate an Applicant
-router.post("/login/applicant", (req, res) => {
-
+// @Post request - /login/
+// Login/Authenticate an Applicant/Recruiter
+// @Public
+router.post("/login", (req, res) => {
     // VALIDATION
     const { errors, isValid } = validateLoginData(req.body);
     if (!isValid) {
@@ -57,41 +59,35 @@ router.post("/login/applicant", (req, res) => {
     const password = req.body.password;
 
     // check if already exists by email
-    Applicant.findOne({ email })
+    Applicant
+        .findOne({ email })
         .then(applicant => {
             if (!applicant) {
-                return res.status(400).json({ msg: 'User does not exist' })
+                Recruiter
+                    .findOne({ email })
+                    .then((recruiter) => {
+                        if (recruiter) {
+                            // validating password
+                            validatePasswordLogin(recruiter, password, "recruiter", res)
+                        } else {
+                            let error = {}
+                            error.email = "Email not registered."
+                            return res.status(400).json(error)
+                        }
+                    })
+            } else {
+                // validating password
+                validatePasswordLogin(applicant, password, "applicant", res)
             }
-            // validating password
-            validatePasswordLogin = (applicant, password)
-            // bcrypt.compare(password, applicant.password)
-            //     .then(isMatch => {
-            //         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" })
-
-            //         jwt.sign(
-            //             { id: applicant.id },
-            //             config.get('jwtSecret'),
-            //             { expiresIn: config.get('tokenExpiry') },
-            //             (err, token) => {
-            //                 if (err) throw err;
-            //                 res.json({
-            //                     token,
-            //                     applicant: {
-            //                         id: applicant.id,
-            //                         name: applicant.name,
-            //                         email: applicant.email
-            //                     }
-            //                 })
-            //             }
-            //         )
-            //     })
         })
 });
 
 
+// APPLICANTS 
 
 // @Post request - /register/applicant
 // Register an Applicant, add it to db
+// @Public
 router.post("/register/applicant", (req, res) => {
 
     // VALIDATION
@@ -105,7 +101,9 @@ router.post("/register/applicant", (req, res) => {
     Applicant.findOne({ email })
         .then(applicant => {
             if (applicant) {
-                return res.status(400).json({ msg: 'User already exists' })
+                error = {}
+                error.email = "Email-id already registered"
+                return res.status(400).json(error)
             }
 
             const newApplicant = new Applicant({
@@ -176,10 +174,12 @@ router.post("/register/recruiter", (req, res) => {
 
     const email = req.body.email;
     // check if already exists by email
-    recruiter.findOne({ email })
+    Recruiter.findOne({ email })
         .then(recruiter => {
             if (recruiter) {
-                return res.status(400).json({ msg: 'User already exists' })
+                error = {}
+                error.email = 'Email-id already registered';
+                return res.status(400).json(error)
             }
 
             const newRecruiter = new Recruiter({
@@ -225,49 +225,48 @@ router.post("/register/recruiter", (req, res) => {
 
 // @POST request - login/recruiter
 // Login recruiter
-router.post("/login/recruiter", (req, res) => {
-    // VALIDATION
-    const { errors, isValid } = validateLoginData(req.body);
-    if (!isValid) {
-        return res.status(400).json(errors);
-    }
+// router.post("/login/recruiter", (req, res) => {
+//     // VALIDATION
+//     const { errors, isValid } = validateLoginData(req.body);
+//     if (!isValid) {
+//         return res.status(400).json(errors);
+//     }
 
-    const email = req.body.email;
-    const password = req.body.password;
+//     const email = req.body.email;
+//     const password = req.body.password;
 
-    // check if already exists by email
-    Recruiter.findOne({ email })
-        .then(recruiter => {
-            if (!recruiter) {
-                return res.status(400).json({ msg: 'User does not exist' })
-            }
+//     // check if already exists by email
+//     Recruiter.findOne({ email })
+//         .then(recruiter => {
+//             if (!recruiter) {
+//                 return res.status(400).json({ msg: 'User does not exist' })
+//             }
 
-            // validating password
-            validatePasswordLogin = (recruiter, password)
-            // bcrypt.compare(password, recruiter.password)
-            //     .then(isMatch => {
-            //         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" })
+//             // validating password
+//             // bcrypt.compare(password, recruiter.password)
+//             //     .then(isMatch => {
+//             //         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" })
 
-            //         jwt.sign(
-            //             { id: recruiter.id },
-            //             config.get('jwtSecret'),
-            //             { expiresIn: config.get('tokenExpiry') },
-            //             (err, token) => {
-            //                 if (err) throw err;
-            //                 res.json({
-            //                     token,
-            //                     recruiter: {
-            //                         id: recruiter.id,
-            //                         name: recruiter.name,
-            //                         email: recruiter.email
-            //                     }
-            //                 })
-            //             }
-            //         )
-            //     })
-        })
+//             //         jwt.sign(
+//             //             { id: recruiter.id },
+//             //             config.get('jwtSecret'),
+//             //             { expiresIn: config.get('tokenExpiry') },
+//             //             (err, token) => {
+//             //                 if (err) throw err;
+//             //                 res.json({
+//             //                     token,
+//             //                     recruiter: {
+//             //                         id: recruiter.id,
+//             //                         name: recruiter.name,
+//             //                         email: recruiter.email
+//             //                     }
+//             //                 })
+//             //             }
+//             //         )
+//             //     })
+//         })
 
-});
+// });
 
 // Get request
 // Get recruiter details

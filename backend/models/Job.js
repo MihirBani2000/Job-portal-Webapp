@@ -23,7 +23,7 @@ const JobSchema = new Schema({
             type: String,
             ref: 'Recruiter',
             required: true,
-            lowecase: true,
+            lowercase: true,
             match: /\S+@\S+\.\S+/
         }
     },
@@ -51,7 +51,7 @@ const JobSchema = new Schema({
     typeOfJob: {
         type: String,
         required: true,
-        lowecase: true,
+        lowercase: true,
         enum: ["full-time", "part-time", "work from home"]
     },
     duration: {

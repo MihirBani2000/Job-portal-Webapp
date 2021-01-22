@@ -8,11 +8,13 @@ const EducationSchema = new Schema({
         required: true
     },
     startYear: {
-        type: Date,
-        required: true
+        type: String,
+        required: true,
+        maxLength: 4
     },
     endYear: {
-        type: Date
+        type: String,
+        maxLength: 4
     }
 });
 
@@ -33,14 +35,14 @@ const ApplicantSchema = new Schema({
         type: String,
         required: true
     },
-    education: EducationSchema,
+    education: [EducationSchema],
     skills: {
         type: [String],
         required: true
     },
     rating: {
         type: Number,
-        required: true,
+        // required: true,
         min: 0,
         max: 5,
         default: 0

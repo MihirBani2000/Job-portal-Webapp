@@ -4,17 +4,22 @@ const isEmpty = require("is-empty");
 
 // for recriuter registration
 const validateApplicantRegister = (data) => {
-    let errors = {};
+    let errors = {
+    };
 
     // convert empty fields to empty strings so we can use validator
     data.name = !isEmpty(data.name) ? data.name : "";
     data.email = !isEmpty(data.email) ? data.email : "";
     data.password = !isEmpty(data.password) ? data.password : "";
-    data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
     data.skills = !isEmpty(data.skills) ? data.skills : "";
-    data.rating = !isEmpty(data.rating) ? data.rating : "";
-    data.education.instituteName = !isEmpty(data.education.instituteName) ? data.education.instituteName : "";
-    data.education.startYear = !isEmpty(data.education.startYear) ? data.education.startYear : "";
+    // data.rating = !isEmpty(data.rating) ? data.rating : "";
+
+    data.education && data.education.forEach((item, index) => {
+        data.education[index].instituteName = !isEmpty(data.education[index].instituteName) ? data.education[index].instituteName : "";
+        data.education[index].startYear = !isEmpty(data.education[index].startYear) ? data.education[index].startYear : "";
+        data.education[index].endYear = !isEmpty(data.education[index].endYear) ? data.education[index].endYear : "";
+    })
 
     // check name
     if (Validator.isEmpty(data.name)) {
@@ -22,24 +27,44 @@ const validateApplicantRegister = (data) => {
     }
 
     // check rating
-    if (Validator.isEmpty(data.rating)) {
-        errors.rating = "Please enter rating.";
-    }
+    // if (Validator.isEmpty(data.rating)) {
+    //     errors.rating = "Please enter rating.";
+    // }
 
     // check skills
     if (Validator.isEmpty(data.skills)) {
         errors.skills = "Please enter skills (don't feel the pressure).";
     }
 
-    // check education.instituteName
-    if (Validator.isEmpty(data.education.instituteName)) {
-        errors.education.instituteName = "Please enter the name of your Institute.";
-    }
-
-    // check education.startYear
-    if (Validator.isEmpty(data.education.startYear)) {
-        errors.education.startYear = "Please enter the start year in the institution.";
-    }
+    // check education
+    data.education && data.education.forEach((item, id) => {
+        let education_error = {}
+        let isError = false;
+        // name check
+        if (Validator.isEmpty(item.instituteName)) {
+            education_error.instituteName = "Please enter the name of your Institute."
+            isError = true;
+        }
+        // start year check
+        if (Validator.isEmpty(item.startYear)) {
+            education_error.startYear = "Please enter the start year in the institution."
+            isError = true;
+        } else if (!Validator.isNumeric(item.startYear) || item.startYear.length != 4) {
+            education_error.startYear = "Institute start year field is not a valid year"
+            isError = true;
+        }
+        // end year check
+        if (!Validator.isEmpty(data.education.endYear)) {
+            if (!Validator.isNumeric(data.education.endYear) || data.education.endYear.length != 4) {
+                education_error.endYear = "Please enter a valid year.";
+                isError = true;
+            }
+        }
+        if (isError === true) {
+            if (!("education" in errors)) errors.education = {}
+            errors.education[id] = education_error;
+        }
+    })
 
     // check Email
     if (Validator.isEmpty(data.email)) {
@@ -53,18 +78,18 @@ const validateApplicantRegister = (data) => {
         errors.password = "Please enter password";
     }
 
-    if (Validator.isEmpty(data.password2)) {
-        errors.password2 = "This has to be the same as other.";
-    }
+    // if (Validator.isEmpty(data.password2)) {
+    //     errors.password2 = "This has to be the same as other.";
+    // }
 
     if (!Validator.isLength(data.password, {
         min: 6
     })) {
         errors.password = "Minimum 6 characters long.";
     }
-    if (!Validator.equals(data.password, data.password2)) {
-        errors.password2 = "This has to be the same as that.";
-    }
+    // if (!Validator.equals(data.password, data.password2)) {
+    //     errors.password2 = "This has to be the same as that.";
+    // }
 
     return {
         errors,
@@ -82,7 +107,7 @@ const validateRecruiterRegister = (data) => {
     data.contactNum = !isEmpty(data.contactNum) ? data.contactNum : "";
     data.email = !isEmpty(data.email) ? data.email : "";
     data.password = !isEmpty(data.password) ? data.password : "";
-    data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
     // check name
     if (Validator.isEmpty(data.name)) {
@@ -113,18 +138,18 @@ const validateRecruiterRegister = (data) => {
         errors.password = "Please enter a password";
     }
 
-    if (Validator.isEmpty(data.password2)) {
-        errors.password2 = "This has to be the same as that.";
-    }
+    // if (Validator.isEmpty(data.password2)) {
+    //     errors.password2 = "This has to be the same as that.";
+    // }
 
     if (!Validator.isLength(data.password, {
         min: 6,
     })) {
         errors.password = "Minimum 6 characters long.";
     }
-    if (!Validator.equals(data.password, data.password2)) {
-        errors.password2 = "This has to be the same as that.";
-    }
+    // if (!Validator.equals(data.password, data.password2)) {
+    //     errors.password2 = "This has to be the same as that.";
+    // }
 
     return {
         errors,

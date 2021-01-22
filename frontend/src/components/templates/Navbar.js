@@ -40,6 +40,9 @@ const NavBar = () => {
                         <NavItem>
                             <NavLink href="/users/">Users</NavLink>
                         </NavItem>
+                        <NavItem>
+                            <NavLink href="/login/">Login</NavLink>
+                        </NavItem>
                         {/* <UncontrolledDropdown nav inNavbar>
                             <DropdownToggle nav caret>
                                 Options
