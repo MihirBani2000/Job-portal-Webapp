@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SignInSide = () => {
+const Login = (props) => {
     const classes = useStyles();
 
     const [email, setEmail] = useState('')
@@ -78,8 +78,9 @@ const SignInSide = () => {
             }
         }).then((response) => {
             console.log(response)
-            if (response.data.status) {
-                this.props.attemptLogin(response.data.token);
+            if (response.status === 200) {
+                // console.log("hi bitch");
+                props.attemptLogin(response.data.token);
             }
         }).catch(error => {
             if (error) {
@@ -89,6 +90,7 @@ const SignInSide = () => {
             }
         });
     }
+
     return (
         <Grid container component="main" className={classes.root}>
             <CssBaseline />
@@ -111,6 +113,7 @@ const SignInSide = () => {
                             label="Email Address"
                             name="email"
                             autoComplete="email"
+                            placeholder="someone@example.com"
                             autoFocus
                             onChange={onChangeEmail}
                             error={errors.email}
@@ -125,6 +128,7 @@ const SignInSide = () => {
                             label="Password"
                             type="password"
                             id="password"
+                            placeholder="******"
                             onChange={onChangePassword}
                             error={errors.password}
                             helperText={errors.password}
@@ -153,4 +157,4 @@ const SignInSide = () => {
     );
 }
 
-export default SignInSide;
+export default Login;

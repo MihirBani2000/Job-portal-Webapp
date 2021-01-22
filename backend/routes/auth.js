@@ -25,7 +25,12 @@ const validatePasswordLogin = (user, password, type, res) => {
                 return res.status(400).json(error)
             }
             jwt.sign(
-                { id: user.id },
+                { // jwt payload
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    type: type
+                },
                 config.get('jwtSecret'),
                 { expiresIn: config.get('tokenExpiry') },
                 (err, token) => {

@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
-export default class EnforceLogin extends Component {
-    render() {
-        let isLoggedIn = true;
-        if (!this.props.isLoggedIn) {
-            isLoggedIn = false;
-        }
-        if (!this.props.desiredType.includes(this.props.type)) {
-            isLoggedIn = false;
-        }
+const EnforceLogin = (props) => {
+    // render() {
+    let isLoggedIn = true;
+    if (!props.isLoggedIn) {
+        isLoggedIn = false;
+    }
+    if (!props.desiredType.includes(props.type)) {
+        isLoggedIn = false;
+    }
 
-        if (!isLoggedIn) {
-            return <Redirect to="/login" />;
+    if (!isLoggedIn) {
+        return <Redirect to="/login" />;
+    } else {
+        if (props.hasProps) {
+            return <Route to={props.path} render={
+                (props) => props.component
+            } />;
         } else {
-            if (this.props.hasProps) {
-                return <Route to={this.props.path} render={
-                    (props) => this.props.component
-                } />;
-            } else {
-                return <Route to={this.props.path} exact component={this.props.component} />
-            }
+            return <Route to={props.path} exact component={props.component} />
         }
     }
+    // }
 }
+export default EnforceLogin;

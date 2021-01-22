@@ -25,9 +25,11 @@ const App = () => {
   const [token, setToken] = useState(null);
 
   const attemptLogin = (token) => {
+    console.log("inside attemptLogin, token", token);
     localStorage.setItem("Token", token);
     setAuthToken(token);
     const decoded = jwt_decode(token);
+    console.log("decoded", decoded);
     setIsLoggedIn(true);
     setUserName(decoded.name);
     setUserId(decoded.id);
@@ -52,26 +54,21 @@ const App = () => {
 
   useEffect(() => {
     // Anything in here is fired on component mount.
-    if (localStorage && localStorage.weBuyToken) {
-      attemptLogin(localStorage.weBuyToken);
+    if (localStorage && localStorage.Token) {
+      attemptLogin(localStorage.Token);
     }
-    return () => {
-      // Anything in here is fired on component unmount.
-    }
-  }, [])
+  }, [isLoggedIn])
 
   return (
     <Router>
       <div className="container">
-        <Navbar />
+        <Navbar isLoggedIn={isLoggedIn} userName={userName} userType={userType} />
         <br />
         <Route path="/" exact component={Landing} />
 
         <Route path="/users" exact component={UsersList} />
         <Route path="/profile" component={Profile} />
-        <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route path="/register/applicant" exact component={RegisterApplicant} />
 
         <Route exact path="/register/recruiter"
           render={
@@ -84,6 +81,33 @@ const App = () => {
               component={RegisterRecruiter}
             />} />
         {/* <Route path="/register/recruiter" exact component={RegisterRecruiter} /> */}
+
+        <Route exact path="/register/applicant"
+          render={
+            (props) => <EnforceLogout {...props}
+              isLoggedIn={isLoggedIn}
+              type={userType}
+              desiredType={["applicant", "recruiter"]}
+              path="/register/applicant"
+              hasProps={false}
+              component={RegisterApplicant}
+            />} />
+        {/* <Route path="/register/applicant" exact component={RegisterApplicant} /> */}
+
+        {/* login */}
+        <Route exact path="/login"
+          render={
+            (props) => <EnforceLogout {...props}
+              isLoggedIn={isLoggedIn}
+              type={userType}
+              desiredType={["applicant", "recruiter"]}
+              path="/login"
+              hasProps={true}
+              component={<Login attemptLogin={attemptLogin} />}
+            />} />
+        {/* <Route path="/login" component={Login} /> */}
+
+        <Route exact path="/logout" render={logout} />
 
       </div>
     </Router>
