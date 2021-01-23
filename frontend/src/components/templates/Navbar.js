@@ -40,8 +40,22 @@ const NavBar = (props) => {
                                 <NavLink href="/recruiter/dashboard/">Dashboard</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="/users/">Jobs</NavLink>
+                                <NavLink href="/users">User</NavLink>
                             </NavItem>
+                            <UncontrolledDropdown nav inNavbar>
+                                <DropdownToggle nav caret>
+                                    My Jobs
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    <DropdownItem href="/recruiter/jobs/">
+                                        Show All
+                                    </DropdownItem>
+                                    <DropdownItem divider />
+                                    <DropdownItem href="/recruiter/jobs/addnew">
+                                        Add New
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
                         </Nav>
                     }
                     {

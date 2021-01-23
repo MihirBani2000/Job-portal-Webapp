@@ -87,7 +87,7 @@ const RegisterRecruiter = () => {
             window.location.replace("http://localhost:3000/login");
         }).catch(error => {
             if (error) {
-                console.log("hi", error.response);
+                console.log("hi register rectuiter error", error.response);
                 setIsError(true);
                 setErrors(error.response.data);
             }

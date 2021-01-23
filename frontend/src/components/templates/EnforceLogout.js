@@ -5,8 +5,9 @@ import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom
 const EnforceLogout = (props) => {
     console.log("inside enforceLogout", props);
     let isLoggedIn = props.isLoggedIn;
+    const desiredType = ["applicant", "recruiter"]
 
-    if (!props.desiredType.includes(props.type)) {
+    if (!desiredType.includes(props.type)) {
         isLoggedIn = false;
     }
     if (isLoggedIn) {
@@ -19,11 +20,10 @@ const EnforceLogout = (props) => {
     } else {
         if (props.hasProps) {
             // console.log("enforce logout hasprops", props);
-            return <Route to={props.path} render={
+            return <Route to={props.path} exact render={
                 () => props.component
             } />;
         } else {
-            // console.log("enforce logout no props", props.component.name);
             return <Route to={props.path} exact component={props.component} />
         }
     }

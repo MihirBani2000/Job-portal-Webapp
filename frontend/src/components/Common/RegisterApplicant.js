@@ -112,6 +112,9 @@ const RegisterApplicant = () => {
         setSkillsList((chips) => chips.filter((chip) => chip !== chipToDelete));
     };
     const handleAddSkill = () => {
+        if (skill === '') {
+            return
+        }
         console.log(skill)
         setSkillsList(skillsList.concat(skill));
         setSkill('');

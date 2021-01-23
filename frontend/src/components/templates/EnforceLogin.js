@@ -2,12 +2,18 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 const EnforceLogin = (props) => {
-    // render() {
+    const desiredType = ["applicant", "recruiter"];
     let isLoggedIn = true;
-    if (!props.isLoggedIn) {
-        isLoggedIn = false;
-    }
-    if (!props.desiredType.includes(props.type)) {
+    const userName = localStorage.getItem("Name");
+    const userType = localStorage.getItem("Type");
+
+    console.log("inside EnforceLogin", userName);
+    // console.log("inside EnforceLogin", props.hasProps);
+
+    if (localStorage.getItem("Token"))
+        isLoggedIn = true;
+
+    if (!desiredType.includes(userType)) {
         isLoggedIn = false;
     }
 
@@ -15,13 +21,12 @@ const EnforceLogin = (props) => {
         return <Redirect to="/login" />;
     } else {
         if (props.hasProps) {
-            return <Route to={props.path} render={
-                (props) => props.component
+            return <Route to={props.path} exact render={
+                () => props.component
             } />;
         } else {
             return <Route to={props.path} exact component={props.component} />
         }
     }
-    // }
 }
 export default EnforceLogin;
