@@ -21,6 +21,18 @@ const ApplicationSchema = new Schema({
         type: String,
         default: "applied",
         enum: ["applied", "accepted", "shortlisted", "rejected"]
+    },
+    ratingByRecruiter: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
+    },
+    ratingByApplicant: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0
     }
 
 });

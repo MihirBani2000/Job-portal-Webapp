@@ -66,9 +66,9 @@ const RegisterApplicant = () => {
     const [password, setPassword] = useState('');
     const [skill, setSkill] = useState('');
     const [skillsList, setSkillsList] = useState([
-        'Angular', 'JS', 'C'
+        // 'Angular', 'JS', 'C'
     ]);
-    const [rating, setRating] = useState(0);
+    // const [rating, setRating] = useState(0);
     const [education, setEducation] = useState({
         instituteName: '',
         startYear: '',
@@ -90,9 +90,9 @@ const RegisterApplicant = () => {
     const onChangePassword = (event) => {
         setPassword(event.target.value);
     }
-    const onChangeRating = (event) => {
-        setRating(Number(event.target.value));
-    }
+    // const onChangeRating = (event) => {
+    //     setRating(Number(event.target.value));
+    // }
     const onChangeSkill = (event) => {
         setSkill(event.target.value);
     }
@@ -133,7 +133,7 @@ const RegisterApplicant = () => {
             },
             // education: education,
             skills: skillsList,
-            rating: rating
+            // rating: rating
         };
 
         console.log("inside onSubmit, register applicant - newApplicant", newApplicant)
@@ -216,19 +216,19 @@ const RegisterApplicant = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} sm={3}>
+                        {/* <Grid item xs={12} sm={3}>
                             <Typography component="h6" variant="h6">
                                 Rating:
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
+                        </Grid> */}
+                        {/* <Grid item xs={12} sm={6}>
                             <Rating
                                 name="rating"
                                 size='large'
                                 value={rating}
                                 onChange={onChangeRating}
                             />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={12} sm={4}>
                             <Typography component="h6" variant="h6">
                                 Skills:

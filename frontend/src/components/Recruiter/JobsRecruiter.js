@@ -21,19 +21,11 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 
 const JobsRecruiter = (props) => {
+    const userType = localStorage.getItem("Type");
+
     const [jobs, setJobs] = useState([]);
     const [filteredJobs, setFilteredJobs] = useState([]);
-    // this.state = { users: [], sortedUsers: [], sortName: true };
 
-    // componentDidMount() {
-    //     axios.get('http://localhost:4000/recruiter/jobs')
-    //         .then(response => {
-    //             this.setState({ users: response.data, sortedUsers: response.data });
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         })
-    // }
     useEffect(() => {
         // Anything in here is fired on component mount.
         console.log("inside useeffect, jobs recruiter", localStorage.getItem("Token"));
@@ -95,7 +87,10 @@ const JobsRecruiter = (props) => {
     //         )
     //     }
     // }
-
+    if (userType !== 'recruiter') {
+        alert(`Forbidden.`);
+        window.location.replace("http://localhost:3000/")
+    }
     return (
         <div>
             <Grid container>

@@ -224,54 +224,9 @@ router.post("/register/recruiter", (req, res) => {
                 })
             })
         })
+        .catch(err => console.log(err))
 });
 
-
-
-// @POST request - login/recruiter
-// Login recruiter
-// router.post("/login/recruiter", (req, res) => {
-//     // VALIDATION
-//     const { errors, isValid } = validateLoginData(req.body);
-//     if (!isValid) {
-//         return res.status(400).json(errors);
-//     }
-
-//     const email = req.body.email;
-//     const password = req.body.password;
-
-//     // check if already exists by email
-//     Recruiter.findOne({ email })
-//         .then(recruiter => {
-//             if (!recruiter) {
-//                 return res.status(400).json({ msg: 'User does not exist' })
-//             }
-
-//             // validating password
-//             // bcrypt.compare(password, recruiter.password)
-//             //     .then(isMatch => {
-//             //         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" })
-
-//             //         jwt.sign(
-//             //             { id: recruiter.id },
-//             //             config.get('jwtSecret'),
-//             //             { expiresIn: config.get('tokenExpiry') },
-//             //             (err, token) => {
-//             //                 if (err) throw err;
-//             //                 res.json({
-//             //                     token,
-//             //                     recruiter: {
-//             //                         id: recruiter.id,
-//             //                         name: recruiter.name,
-//             //                         email: recruiter.email
-//             //                     }
-//             //                 })
-//             //             }
-//             //         )
-//             //     })
-//         })
-
-// });
 
 // Get request
 // Get recruiter details

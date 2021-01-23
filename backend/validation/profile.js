@@ -3,16 +3,13 @@ const isEmpty = require("is-empty");
 
 
 // for recriuter registration
-const validateApplicantRegister = (data) => {
+const validateApplicantProfile = (data) => {
     let errors = {
     };
 
     // convert empty fields to empty strings so we can use validator
     data.name = !isEmpty(data.name) ? data.name : "";
     data.email = !isEmpty(data.email) ? data.email : "";
-    data.password = !isEmpty(data.password) ? data.password : "";
-    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
-    // data.rating = !isEmpty(data.rating) ? data.rating : "";
     data.skills && data.skills.forEach((item, index) => {
         data.skills[index] = !isEmpty(data.skills[index]) ? data.skills[index] : "";
     })
@@ -83,24 +80,6 @@ const validateApplicantRegister = (data) => {
         errors.email = "Invalid email address";
     }
 
-    // check password
-    if (Validator.isEmpty(data.password)) {
-        errors.password = "Please enter password";
-    }
-
-    // if (Validator.isEmpty(data.password2)) {
-    //     errors.password2 = "This has to be the same as other.";
-    // }
-
-    if (!Validator.isLength(data.password, {
-        min: 6
-    })) {
-        errors.password = "Minimum 6 characters long.";
-    }
-    // if (!Validator.equals(data.password, data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
-
     return {
         errors,
         isValid: isEmpty(errors)
@@ -108,16 +87,14 @@ const validateApplicantRegister = (data) => {
 };
 
 // for recriuter registration
-const validateRecruiterRegister = (data) => {
+const validateRecruiterProfile = (data) => {
     let errors = {};
 
     // convert empty fields to empty strings so we can use validator
-    data.name = !isEmpty(data.name) ? data.name : "";
-    data.bio = !isEmpty(data.bio) ? data.bio : "";
-    data.contactNum = !isEmpty(data.contactNum) ? data.contactNum : "";
-    data.email = !isEmpty(data.email) ? data.email : "";
-    data.password = !isEmpty(data.password) ? data.password : "";
-    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+    data.name = !isEmpty(data.name) ? data.name.toString() : "";
+    data.bio = !isEmpty(data.bio) ? data.bio.toString() : "";
+    data.contactNum = !isEmpty(data.contactNum) ? data.contactNum.toString() : "";
+    data.email = !isEmpty(data.email) ? data.email.toString() : "";
 
     // check name
     if (Validator.isEmpty(data.name)) {
@@ -133,7 +110,7 @@ const validateRecruiterRegister = (data) => {
     if (Validator.isEmpty(data.contactNum)) {
         errors.contactNum = "Your mobile number, please?";
     } else if (!Validator.isMobilePhone(data.contactNum, "en-IN", { strictMode: true })) {
-        errors.contactNum = "Please provide your Indian mobile number as +91XXXXXXXXXX."
+        errors.contactNum = "Please provide your Indian mobile number as 91XXXXXXXXXX."
     }
 
     // check Email
@@ -143,24 +120,6 @@ const validateRecruiterRegister = (data) => {
         errors.email = "That doesn't seem like a valid email address :(";
     }
 
-    // check password
-    if (Validator.isEmpty(data.password)) {
-        errors.password = "Please enter a password";
-    }
-
-    // if (Validator.isEmpty(data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
-
-    if (!Validator.isLength(data.password, {
-        min: 6,
-    })) {
-        errors.password = "Minimum 6 characters long.";
-    }
-    // if (!Validator.equals(data.password, data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
-
     return {
         errors,
         isValid: isEmpty(errors)
@@ -169,6 +128,6 @@ const validateRecruiterRegister = (data) => {
 
 
 module.exports = {
-    validateApplicantRegister,
-    validateRecruiterRegister
+    validateApplicantProfile,
+    validateRecruiterProfile
 }

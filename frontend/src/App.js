@@ -4,18 +4,27 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import jwt_decode from 'jwt-decode';
 import './App.css';
 
+// Templates and root
 import setAuthToken from './set-auth-token';
-import UsersList from './components/Users/UsersList'
+import EnforceLogin from './components/templates/EnforceLogin'
+import EnforceLogout from './components/templates/EnforceLogout'
+import Navbar from './components/templates/Navbar'
+// Common
 import Home from './components/Common/Home'
 import Login from './components/Common/Login'
 import Register from './components/Common/Register'
 import Landing from './components/Common/Landing'
 import RegisterRecruiter from './components/Common/RegisterRecruiter'
 import RegisterApplicant from './components/Common/RegisterApplicant'
-import Navbar from './components/templates/Navbar'
-import EnforceLogin from './components/templates/EnforceLogin'
-import EnforceLogout from './components/templates/EnforceLogout'
+// Users
+import UsersList from './components/Users/UsersList'
 import Profile from './components/Users/Profile'
+// Applicant
+import ProfileApplicant from './components/Applicant/ProfileApplicant'
+// Recruiter
+import JobsRecruiter from './components/Recruiter/JobsRecruiter'
+import ProfileRecruiter from './components/Recruiter/ProfileRecruiter'
+import AddJob from './components/Recruiter/AddJob'
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,22 +34,30 @@ const App = () => {
   const [token, setToken] = useState(null);
 
   const attemptLogin = (token) => {
-    console.log("inside attemptLogin, token", token);
+    console.log("inside attemptLogin");
     localStorage.setItem("Token", token);
     setAuthToken(token);
     const decoded = jwt_decode(token);
-    console.log("decoded", decoded);
+    // console.log("decoded", decoded);
     setIsLoggedIn(true);
     setUserName(decoded.name);
     setUserId(decoded.id);
     setUserType(decoded.type);
     setToken(token);
+    localStorage.setItem("Id", decoded.id);
+    localStorage.setItem("Name", decoded.name);
+    localStorage.setItem("Email", decoded.email);
+    localStorage.setItem("Type", decoded.type);
   }
 
   const logout = () => {
     console.log("Logged out")
     if (localStorage && localStorage.Token) {
       localStorage.removeItem("Token");
+      localStorage.removeItem("Id");
+      localStorage.removeItem("Name");
+      localStorage.removeItem("Email");
+      localStorage.removeItem("Type");
     }
 
     setIsLoggedIn(false);
@@ -53,29 +70,49 @@ const App = () => {
   }
 
   useEffect(() => {
-    // Anything in here is fired on component mount.
+    // Anything in here is fired on A mount.
     if (localStorage && localStorage.Token) {
       attemptLogin(localStorage.Token);
     }
-  }, [isLoggedIn])
+  }, [])
 
   return (
     <Router>
       <div className="container">
         <Navbar isLoggedIn={isLoggedIn} userName={userName} userType={userType} />
         <br />
-        <Route path="/" exact component={Landing} />
+
+        <Route exact path="/"
+          render={
+            (props) => <EnforceLogout {...props}
+              isLoggedIn={isLoggedIn}
+              type={userType}
+              path="/"
+              hasProps={false}
+              component={Landing}
+            />} />
+        {/* <Route path="/" exact component={Landing} /> */}
 
         <Route path="/users" exact component={UsersList} />
         <Route path="/profile" component={Profile} />
         <Route path="/register" component={Register} />
+
+        <Route exact path="/login"
+          render={
+            (props) => <EnforceLogout {...props}
+              isLoggedIn={isLoggedIn}
+              type={userType}
+              path="/login"
+              hasProps={true}
+              component={<Login attemptLogin={attemptLogin} />}
+            />} />
+        {/* <Route path="/login" component={Login} /> */}
 
         <Route exact path="/register/recruiter"
           render={
             (props) => <EnforceLogout {...props}
               isLoggedIn={isLoggedIn}
               type={userType}
-              desiredType={["applicant", "recruiter"]}
               path="/register/recruiter"
               hasProps={false}
               component={RegisterRecruiter}
@@ -87,25 +124,41 @@ const App = () => {
             (props) => <EnforceLogout {...props}
               isLoggedIn={isLoggedIn}
               type={userType}
-              desiredType={["applicant", "recruiter"]}
               path="/register/applicant"
               hasProps={false}
               component={RegisterApplicant}
             />} />
         {/* <Route path="/register/applicant" exact component={RegisterApplicant} /> */}
 
-        {/* login */}
-        <Route exact path="/login"
+
+        <Route exact path="/recruiter/jobs/"
           render={
-            (props) => <EnforceLogout {...props}
-              isLoggedIn={isLoggedIn}
-              type={userType}
-              desiredType={["applicant", "recruiter"]}
-              path="/login"
-              hasProps={true}
-              component={<Login attemptLogin={attemptLogin} />}
+            (props) => <EnforceLogin {...props}
+              path="/recruiter/jobs/"
+              hasProps={false}
+              component={JobsRecruiter}
             />} />
-        {/* <Route path="/login" component={Login} /> */}
+        {/* <Route path="/recruiter/jobs/addnew" component={JobsRecruiter} /> */}
+
+        <Route exact path="/recruiter/jobs/addnew"
+          render={
+            (props) => <EnforceLogin {...props}
+              path="/recruiter/jobs/addnew"
+              hasProps={false}
+              component={AddJob}
+            />} />
+        {/* <Route path="/recruiter/jobs/addnew" component={AddJob} /> */}
+
+
+        <Route exact path="/recruiter/profile/"
+          render={
+            (props) => <EnforceLogin {...props}
+              path="/recruiter/profile/"
+              hasProps={false}
+              component={ProfileRecruiter}
+            />} />
+        {/* <Route path="/recruiter/jobs/addnew" component={JobsRecruiter} /> */}
+
 
         <Route exact path="/logout" render={logout} />
 

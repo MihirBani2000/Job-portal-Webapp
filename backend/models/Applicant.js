@@ -42,17 +42,16 @@ const ApplicantSchema = new Schema({
     },
     rating: {
         type: Number,
-        // required: true,
         min: 0,
         max: 5,
         default: 0
     },
-    photo: {
-        type: String
-    },
-    resume: {
-        type: String
-    }
+    // photo: {
+    //     type: String
+    // },
+    // resume: {
+    //     type: String
+    // }
 });
 
 module.exports = Applicant = mongoose.model("Applicant", ApplicantSchema);
