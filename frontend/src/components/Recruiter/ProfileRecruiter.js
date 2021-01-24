@@ -235,9 +235,3 @@ const ProfileRecruiter = () => {
 }
 
 export default ProfileRecruiter;
-
-// work left
-// 1. backend for put Done
-// 2. save submit
-// 2. axios put from here
-// 3. error validation

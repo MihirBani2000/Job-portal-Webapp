@@ -159,6 +159,14 @@ const App = () => {
             />} />
         {/* <Route path="/recruiter/jobs/addnew" component={JobsRecruiter} /> */}
 
+        <Route exact path="/applicant/profile/"
+          render={
+            (props) => <EnforceLogin {...props}
+              path="/applicant/profile/"
+              hasProps={false}
+              component={ProfileApplicant}
+            />} />
+        {/* <Route path="/applicant/jobs/addnew" component={JobsApplicant} /> */}
 
         <Route exact path="/logout" render={logout} />
 
