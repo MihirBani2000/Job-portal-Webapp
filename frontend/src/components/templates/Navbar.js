@@ -17,7 +17,7 @@ import {
     Container
 } from 'reactstrap';
 
-const NavBar = () => {
+const NavBar = (props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => {
@@ -30,58 +30,75 @@ const NavBar = () => {
                 <NavbarBrand href="/">Home</NavbarBrand>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>
-                    <Nav className="mr-auto" navbar>
-                        <NavItem>
-                            <NavLink href="/profile/">Profile</NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink href="/register/">Register</NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink href="/users/">Users</NavLink>
-                        </NavItem>
-                        {/* <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle nav caret>
-                                Options
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem>
-                                    Option 1
-                            </DropdownItem>
-                                <DropdownItem>
-                                    Option 2
-                            </DropdownItem>
-                                <DropdownItem divider />
-                                <DropdownItem>
-                                    Reset
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown> */}
-                    </Nav>
-                    <NavbarText>NAME</NavbarText>
+                    {
+                        props.isLoggedIn && props.userType === 'recruiter' &&
+                        <Nav className="mr-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/recruiter/profile/">Profile</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/recruiter/dashboard/">Dashboard</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/users">User</NavLink>
+                            </NavItem>
+                            <UncontrolledDropdown nav inNavbar>
+                                <DropdownToggle nav caret>
+                                    My Jobs
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    <DropdownItem href="/recruiter/jobs/">
+                                        Show All
+                                    </DropdownItem>
+                                    <DropdownItem divider />
+                                    <DropdownItem href="/recruiter/jobs/addnew">
+                                        Add New
+                                    </DropdownItem>
+                                </DropdownMenu>
+                            </UncontrolledDropdown>
+                        </Nav>
+                    }
+                    {
+                        props.isLoggedIn && props.userType === 'applicant' &&
+                        <Nav className="mr-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/applicant/profile/">Profile</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/applicant/dashboard/">Dashboard</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/users/">Jobs</NavLink>
+                            </NavItem>
+                        </Nav>
+                    }
+                    {
+                        !props.isLoggedIn &&
+                        <Nav className="mr-auto" navbar>
+                            <NavItem>
+                                <NavLink href="/register/">Register</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink href="/login/">Login</NavLink>
+                            </NavItem>
+
+                        </Nav>
+                    }
+                    {
+                        props.isLoggedIn &&
+                        <NavbarText>
+                            Logged in as - <b>{props.userName}</b> ({props.userType})
+                        </NavbarText>
+                    }
+                    {
+                        props.isLoggedIn &&
+                        <NavLink href="/logout">LOGOUT</NavLink>
+                    }
+
                 </Collapse>
             </Navbar>
         </div>
-        // <div>
-        //     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        //         <Link to="/" className="navbar-brand">Demo</Link>
-        //         <div className="collapse navbar-collapse">
-        //             <ul className="navbar-nav mr-auto">
-        //                 <li className="navbar-item">
-        //                     <Link to="/users" className="nav-link">Users</Link>
-        //                 </li>
-        //                 <li className="navbar-item">
-        //                     <Link to="/register" className="nav-link">Register</Link>
-        //                 </li>
-        //                 <li className="navbar-item">
-        //                     <Link to="/profile" className="nav-link">My Profile</Link>
-        //                 </li>
-        //             </ul>
-        //         </div>
-        //     </nav>
-        // </div>
     )
-
 }
 
 export default NavBar;

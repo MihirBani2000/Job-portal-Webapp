@@ -1,21 +1,11 @@
-import React, { Component, useState } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import axios from 'axios';
-import RegisterApplicant from './RegisterApplicant';
-import RegisterRecruiter from './RegisterRecruiter';
-import { Button } from 'reactstrap';
+import React from "react";
+import { Link } from "react-router-dom";
 
 
-const Register = () => {
-    const [userType, setUserType] = useState("");
+const Landing = () => {
     return (
         <div>
             <h1>Hi there, register here</h1>
-            {/* { if(userType === '') {
-
-            }}
-            <Button onClick={() => { setUserType("recruiter") }} color="primary" size="lg">Recruiter</Button>{'       '}
-            <Button onClick={() => { setUserType("applicant") }} color="secondary" size="lg">Applicant</Button> */}
             <div className="container mt-5">
 
                 <div className="row">
@@ -27,7 +17,7 @@ const Register = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Register;
+export default Landing;

@@ -9,7 +9,8 @@ const Applicant = require("../models/Applicant");
 const Application = require("../models/Application");
 
 // load validators
-const { validateJobData } = require('../validation/jobs')
+const { validateJobData, validateEditJobData } = require('../validation/jobs');
+const { validateRecruiterProfile } = require("../validation/profile");
 
 // Get request
 // Get all the recruiters
@@ -24,43 +25,60 @@ router.get("/", (req, res) => {
 });
 
 // Get request
-// Get all the attributes of one recruiter by id
-router.get("/:id/profile", (req, res) => {
-    Recruiter.findById(req.params.id, (err, job) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.json(job);
-        }
-    })
-});
-
-// PUT request
-// Edit attributes of particular recruiter by id
-router.put("/:id/profile/edit", (req, res) => {
-    Recruiter.findByIdAndUpdate(
-        req.params.id,
-        { $set: req.body },
-        { new: true },
-        (err, job) => {
+// Get all the attributes of one recruite
+// @Private
+router.get("/profile", auth, (req, res) => {
+    const id = req.user.id;
+    Recruiter
+        .findById(id).lean()
+        .select("-password")
+        .exec((err, profile) => {
             if (err) {
                 console.log(err);
+                res.status(500).json(error)
             } else {
-                res.json(job);
+                res.json(profile);
             }
         })
 });
+
+// PUT request
+// Edit attributes of particular recruiter
+// @Private
+router.put("/profile/edit", auth, (req, res) => {
+    const id = req.user.id;
+    const { errors, isValid } = validateRecruiterProfile(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
+    Recruiter.findByIdAndUpdate(
+        id,
+        req.body,
+        { new: true },
+        (err, profile) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.json(profile);
+            }
+        })
+});
+
 
 // JOBS RELATED
 
 // GET request 
 // Get ALL the Jobs by recruiter
-router.get("/:id/jobs/", (req, res) => {
-    const recruiterId = req.params.id
+// @Private
+router.get("/jobs/", auth, (req, res) => {
+    const recruiterId = req.user.id
     Job
         .find({ "recruiter.id": recruiterId })
+        .lean()
         .exec((err, job) => {
             if (err) {
+                res.status(500).json(error);
                 console.log(err);
             } else {
                 res.json(job);
@@ -70,14 +88,16 @@ router.get("/:id/jobs/", (req, res) => {
 
 // POST request 
 // Add a new job to db by a particular recruiter (id)
-router.post("/:id/jobs/addnew/", (req, res) => {
+// @Private
+router.post("/jobs/addnew/", auth, (req, res) => {
     // VALIDATION
     const { errors, isValid } = validateJobData(req.body);
     if (!isValid) {
         return res.status(400).json(errors);
     }
 
-    const recruiterId = req.params.id;
+    // const recruiterId = req.params.id;
+    const recruiterId = req.user.id;
     const newJob = new Job({
         title: req.body.title,
         recruiter: {
@@ -93,7 +113,7 @@ router.post("/:id/jobs/addnew/", (req, res) => {
         typeOfJob: req.body.typeOfJob,
         duration: Number(req.body.duration),
         salary: Number(req.body.salary),
-        rating: Number(req.body.rating)
+        // rating: Number(req.body.rating)
     });
 
     newJob.save()
@@ -107,8 +127,9 @@ router.post("/:id/jobs/addnew/", (req, res) => {
 
 // GET request 
 // Get a particular job by recruiter
-router.get("/:id/jobs/:jobid", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.get("/jobs/:jobid", auth, (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
     Job
         .find({ "recruiter.id": recruiterId, "_id": jobId })
@@ -123,8 +144,13 @@ router.get("/:id/jobs/:jobid", (req, res) => {
 
 // PUT request
 // Edit job attributes by particular recruiter
-router.put("/:id/jobs/:jobid/edit", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.put("/jobs/:jobid/edit", auth, (req, res) => {
+    const { errors, isValid } = validateEditJobData(req.body);
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
     Job.findOneAndUpdate(
         { "recruiter.id": recruiterId, "_id": jobId },
@@ -141,8 +167,9 @@ router.put("/:id/jobs/:jobid/edit", (req, res) => {
 
 // @Delete request
 // Delete a job by id
-router.delete("/:id/jobs/:jobid/delete", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.delete("/jobs/:jobid/delete", auth, (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
 
     Job.find(
@@ -166,26 +193,12 @@ router.delete("/:id/jobs/:jobid/delete", (req, res) => {
 });
 
 
-
 // GET request
 // To get all the applications on the job
-router.get("/:id/jobs/:jobid/applications", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.get("/jobs/:jobid/applications", auth, (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
-    // Job.find(
-    //     { "recruiter.id": recruiterId, "_id": jobId },
-    //     (err, job) => {
-    //         if (err) return console.log(err)
-    //         else {
-    //             Application
-    //                 .find({ jobId: jobId })
-    //                 .populate('applicantId')
-    //                 .then(application => res.json(application))
-    //                 .catch(err => console.log(err))
-    //             res.json(job)
-    //         }
-    //     }
-    // );
     Application
         .find({ jobId: jobId })
         .populate('applicantId').populate('jobId')
@@ -223,8 +236,9 @@ router.get("/:id/jobs/:jobid/applications", (req, res) => {
 
 // GET request
 // To get all the accepted applications on the job
-router.get("/:id/jobs/:jobid/applications/accepted", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.get("/jobs/:jobid/applications/accepted", auth, (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
     Application
         .find({ jobId: jobId, status: "accepted" })
@@ -234,11 +248,11 @@ router.get("/:id/jobs/:jobid/applications/accepted", (req, res) => {
 });
 
 
-
 // POST request
 // To change the status of the application
-router.post("/:id/jobs/:jobid/applications/:status", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.post("/jobs/:jobid/applications/:status", auth, (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
     const newStatus = req.params.status;
 
@@ -262,8 +276,9 @@ router.post("/:id/jobs/:jobid/applications/:status", (req, res) => {
 
 // DELETE request
 // To delete a rejected application
-router.delete("/:id/jobs/:jobid/applications/rejected", (req, res) => {
-    const recruiterId = req.params.id;
+// @Private
+router.delete("/jobs/:jobid/applications/rejected", (req, res) => {
+    const recruiterId = req.user.id;
     const jobId = req.params.jobid;
 
     Application

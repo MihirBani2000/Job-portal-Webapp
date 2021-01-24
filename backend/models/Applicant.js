@@ -8,11 +8,13 @@ const EducationSchema = new Schema({
         required: true
     },
     startYear: {
-        type: Date,
-        required: true
+        type: String,
+        required: true,
+        maxLength: 4
     },
     endYear: {
-        type: Date
+        type: String,
+        maxLength: 4
     }
 });
 
@@ -33,24 +35,21 @@ const ApplicantSchema = new Schema({
         type: String,
         required: true
     },
-    education: EducationSchema,
+    education: {
+        type: [EducationSchema],
+        required: true
+    },
     skills: {
         type: [String],
         required: true
     },
     rating: {
         type: Number,
-        required: true,
         min: 0,
         max: 5,
         default: 0
     },
-    photo: {
-        type: String
-    },
-    resume: {
-        type: String
-    }
+
 });
 
 module.exports = Applicant = mongoose.model("Applicant", ApplicantSchema);
