@@ -35,7 +35,10 @@ const ApplicantSchema = new Schema({
         type: String,
         required: true
     },
-    education: [EducationSchema],
+    education: {
+        type: [EducationSchema],
+        required: true
+    },
     skills: {
         type: [String],
         required: true
@@ -46,12 +49,7 @@ const ApplicantSchema = new Schema({
         max: 5,
         default: 0
     },
-    // photo: {
-    //     type: String
-    // },
-    // resume: {
-    //     type: String
-    // }
+
 });
 
 module.exports = Applicant = mongoose.model("Applicant", ApplicantSchema);

@@ -110,19 +110,14 @@ router.post("/register/applicant", (req, res) => {
                 error.email = "Email-id already registered"
                 return res.status(400).json(error)
             }
-
             const newApplicant = new Applicant({
                 name: req.body.name,
                 email: email,
                 password: req.body.password,
-                education: {
-                    instituteName: req.body.education.instituteName,
-                    startYear: req.body.education.startYear,
-                    endYear: req.body.education.endYear
-                },
                 skills: req.body.skills,
                 rating: req.body.rating
             });
+            if (req.body.education) newApplicant.education = req.body.education
 
             // Create salt and hash
             bcrypt.genSalt(10, (err, salt) => {

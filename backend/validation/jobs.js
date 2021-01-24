@@ -25,22 +25,11 @@ const validateJobData = (data) => {
     }
 
     // check skills
-    if (!(data.skills.length)) {
+    if (!data.skills) {
         errors.skills = "Please enter the required skills.";
-    } else {
-        data.skills.forEach((item, id) => {
-            let skills_error = ''
-            let isError = false;
-            if (Validator.isEmpty(item)) {
-                skills_error = "Please enter a skill."
-                isError = true;
-                // console.log("skill error", isError)
-            }
-            if (isError === true) {
-                if (!("skills" in errors)) errors.skills = {}
-                errors.skills[id] = skills_error;
-            }
-        })
+    }
+    else if (!data.skills.length) {
+        errors.skills = "Please enter the required skills.";
     }
     // console.log("inside validate job data", data.skills);
 

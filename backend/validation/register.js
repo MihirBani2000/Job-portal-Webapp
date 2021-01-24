@@ -4,6 +4,7 @@ const isEmpty = require("is-empty");
 
 // for recriuter registration
 const validateApplicantRegister = (data) => {
+    // console.log("entering validateApplicantRegister", data)
     let errors = {
     };
 
@@ -11,11 +12,11 @@ const validateApplicantRegister = (data) => {
     data.name = !isEmpty(data.name) ? data.name : "";
     data.email = !isEmpty(data.email) ? data.email : "";
     data.password = !isEmpty(data.password) ? data.password : "";
-    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
-    // data.rating = !isEmpty(data.rating) ? data.rating : "";
+
     data.skills && data.skills.forEach((item, index) => {
         data.skills[index] = !isEmpty(data.skills[index]) ? data.skills[index] : "";
     })
+
     data.education && data.education.forEach((item, index) => {
         data.education[index].instituteName = !isEmpty(data.education[index].instituteName) ? data.education[index].instituteName : "";
         data.education[index].startYear = !isEmpty(data.education[index].startYear) ? data.education[index].startYear : "";
@@ -28,53 +29,55 @@ const validateApplicantRegister = (data) => {
     }
 
     // check skills
-    if (!(data.skills.length)) {
+    if (!data.skills) {
         errors.skills = "Please enter the required skills.";
-    } else {
-        data.skills.forEach((item, id) => {
-            let skills_error = ''
-            let isError = false;
-            if (Validator.isEmpty(item)) {
-                skills_error = "Please enter a skill."
-                isError = true;
-                // console.log("skill error", isError)
-            }
-            if (isError === true) {
-                if (!("skills" in errors)) errors.skills = {}
-                errors.skills[id] = skills_error;
-            }
-        })
+    }
+    else if (!data.skills.length) {
+        // console.log("skill length", data.skills.length);
+        errors.skills = "Please enter the required skills.";
     }
 
     // check education
-    data.education && data.education.forEach((item, id) => {
-        let education_error = {}
-        let isError = false;
-        // name check
-        if (Validator.isEmpty(item.instituteName)) {
-            education_error.instituteName = "Please enter the name of your Institute."
-            isError = true;
-        }
-        // start year check
-        if (Validator.isEmpty(item.startYear)) {
-            education_error.startYear = "Please enter the start year in the institution."
-            isError = true;
-        } else if (!Validator.isNumeric(item.startYear) || item.startYear.length != 4) {
-            education_error.startYear = "Institute start year field is not a valid year"
-            isError = true;
-        }
-        // end year check
-        if (!Validator.isEmpty(data.education.endYear)) {
-            if (!Validator.isNumeric(data.education.endYear) || data.education.endYear.length != 4) {
-                education_error.endYear = "Please enter a valid year.";
+    if (!data.education) {
+        errors.education = "Please enter info about your education.";
+    } else if (!data.education.length) {
+        errors.education = "Please enter info about your education.";
+    }
+    else {
+        data.education.forEach((item, id) => {
+            let education_error = {}
+            let isError = false;
+
+            // name check
+            if (Validator.isEmpty(item.instituteName)) {
+                education_error.instituteName = "Please enter the name of your Institute."
                 isError = true;
             }
-        }
-        if (isError === true) {
-            if (!("education" in errors)) errors.education = {}
-            errors.education[id] = education_error;
-        }
-    })
+
+            // start year check
+            if (Validator.isEmpty(item.startYear)) {
+                education_error.startYear = "Please enter the start year in the institution."
+                isError = true;
+            } else if (!Validator.isNumeric(item.startYear) || item.startYear.length != 4) {
+                console.log("hi education4");
+                education_error.startYear = "Please enter a valid year."
+                isError = true;
+            }
+
+            // end year check
+            if (!Validator.isEmpty(item.endYear)) {
+                if (!Validator.isNumeric(item.endYear) || item.endYear.length != 4) {
+                    education_error.endYear = "Please enter a valid year.";
+                    isError = true;
+                }
+            }
+
+            if (isError === true) {
+                if (!("education" in errors)) errors.education = {}
+                errors.education[id] = education_error;
+            }
+        })
+    }
 
     // check Email
     if (Validator.isEmpty(data.email)) {
@@ -86,30 +89,25 @@ const validateApplicantRegister = (data) => {
     // check password
     if (Validator.isEmpty(data.password)) {
         errors.password = "Please enter password";
-    }
-
-    // if (Validator.isEmpty(data.password2)) {
-    //     errors.password2 = "This has to be the same as other.";
-    // }
-
-    if (!Validator.isLength(data.password, {
-        min: 6
-    })) {
+    } else if (!Validator.isLength(data.password, { min: 6 })) {
         errors.password = "Minimum 6 characters long.";
     }
-    // if (!Validator.equals(data.password, data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
 
+    // console.log("exiting validateApplicantRegister")
     return {
         errors,
         isValid: isEmpty(errors)
     };
 };
 
-// for recriuter registration
+// for recruiter registration
 const validateRecruiterRegister = (data) => {
+    String.prototype.countWords = function () {
+        return this.split(/\s+\b/).length;
+    }
+
     let errors = {};
+    // console.log("entering validateRecruiterRegister")
 
     // convert empty fields to empty strings so we can use validator
     data.name = !isEmpty(data.name) ? data.name : "";
@@ -117,7 +115,6 @@ const validateRecruiterRegister = (data) => {
     data.contactNum = !isEmpty(data.contactNum) ? data.contactNum : "";
     data.email = !isEmpty(data.email) ? data.email : "";
     data.password = !isEmpty(data.password) ? data.password : "";
-    // data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
     // check name
     if (Validator.isEmpty(data.name)) {
@@ -127,6 +124,8 @@ const validateRecruiterRegister = (data) => {
     // check bio
     if (Validator.isEmpty(data.bio)) {
         errors.bio = "Please tell us about yourself.";
+    } else if (data.bio.countWords > 250) {
+        errors.bio = "Max limit is 250 words.";
     }
 
     // check contactNum
@@ -147,19 +146,11 @@ const validateRecruiterRegister = (data) => {
     if (Validator.isEmpty(data.password)) {
         errors.password = "Please enter a password";
     }
-
-    // if (Validator.isEmpty(data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
-
     if (!Validator.isLength(data.password, {
         min: 6,
     })) {
         errors.password = "Minimum 6 characters long.";
     }
-    // if (!Validator.equals(data.password, data.password2)) {
-    //     errors.password2 = "This has to be the same as that.";
-    // }
 
     return {
         errors,

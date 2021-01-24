@@ -25,53 +25,55 @@ const validateApplicantProfile = (data) => {
     }
 
     // check skills
-    if (!(data.skills.length)) {
+    if (!data.skills) {
         errors.skills = "Please enter the required skills.";
-    } else {
-        data.skills.forEach((item, id) => {
-            let skills_error = ''
-            let isError = false;
-            if (Validator.isEmpty(item)) {
-                skills_error = "Please enter a skill."
-                isError = true;
-                // console.log("skill error", isError)
-            }
-            if (isError === true) {
-                if (!("skills" in errors)) errors.skills = {}
-                errors.skills[id] = skills_error;
-            }
-        })
+    }
+    else if (!data.skills.length) {
+        // console.log("skill length", data.skills.length);
+        errors.skills = "Please enter the required skills.";
     }
 
     // check education
-    data.education && data.education.forEach((item, id) => {
-        let education_error = {}
-        let isError = false;
-        // name check
-        if (Validator.isEmpty(item.instituteName)) {
-            education_error.instituteName = "Please enter the name of your Institute."
-            isError = true;
-        }
-        // start year check
-        if (Validator.isEmpty(item.startYear)) {
-            education_error.startYear = "Please enter the start year in the institution."
-            isError = true;
-        } else if (!Validator.isNumeric(item.startYear) || item.startYear.length != 4) {
-            education_error.startYear = "Institute start year field is not a valid year"
-            isError = true;
-        }
-        // end year check
-        if (!Validator.isEmpty(data.education.endYear)) {
-            if (!Validator.isNumeric(data.education.endYear) || data.education.endYear.length != 4) {
-                education_error.endYear = "Please enter a valid year.";
+    if (!data.education) {
+        errors.education = "Please enter info about your education.";
+    } else if (!data.education.length) {
+        errors.education = "Please enter info about your education.";
+    }
+    else {
+        data.education.forEach((item, id) => {
+            let education_error = {}
+            let isError = false;
+
+            // name check
+            if (Validator.isEmpty(item.instituteName)) {
+                education_error.instituteName = "Please enter the name of your Institute."
                 isError = true;
             }
-        }
-        if (isError === true) {
-            if (!("education" in errors)) errors.education = {}
-            errors.education[id] = education_error;
-        }
-    })
+
+            // start year check
+            if (Validator.isEmpty(item.startYear)) {
+                education_error.startYear = "Please enter the start year in the institution."
+                isError = true;
+            } else if (!Validator.isNumeric(item.startYear) || item.startYear.length != 4) {
+                console.log("hi education4");
+                education_error.startYear = "Please enter a valid year."
+                isError = true;
+            }
+
+            // end year check
+            if (!Validator.isEmpty(item.endYear)) {
+                if (!Validator.isNumeric(item.endYear) || item.endYear.length != 4) {
+                    education_error.endYear = "Please enter a valid year.";
+                    isError = true;
+                }
+            }
+
+            if (isError === true) {
+                if (!("education" in errors)) errors.education = {}
+                errors.education[id] = education_error;
+            }
+        })
+    }
 
     // check Email
     if (Validator.isEmpty(data.email)) {
@@ -88,6 +90,9 @@ const validateApplicantProfile = (data) => {
 
 // for recriuter registration
 const validateRecruiterProfile = (data) => {
+    String.prototype.countWords = function () {
+        return this.split(/\s+\b/).length;
+    }
     let errors = {};
 
     // convert empty fields to empty strings so we can use validator
@@ -104,6 +109,8 @@ const validateRecruiterProfile = (data) => {
     // check bio
     if (Validator.isEmpty(data.bio)) {
         errors.bio = "Please tell us about yourself.";
+    } else if (data.bio.countWords > 250) {
+        errors.bio = "Max limit is 250 words.";
     }
 
     // check contactNum

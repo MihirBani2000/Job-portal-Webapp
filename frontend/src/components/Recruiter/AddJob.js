@@ -97,6 +97,10 @@ const AddJob = () => {
     const handleSkillDelete = (chipToDelete) => () => {
         setSkillsList((chips) => chips.filter((chip) => chip !== chipToDelete));
     };
+    const handleSkillClick = (clickedChip) => () => {
+        setSkill(clickedChip)
+        setSkillsList((chips) => chips.filter((chip) => chip !== clickedChip));
+    };
     const handleAddSkill = () => {
         if (skill === '') {
             return
@@ -266,14 +270,14 @@ const AddJob = () => {
                         <Grid item xs={12}>
                             <Paper component="ul" className={classes.root}>
                                 {skillsList.map((skill) => {
-                                    let icon;
                                     return (
                                         <li key={skill}>
                                             <Chip
-                                                icon={icon}
                                                 label={skill}
                                                 onDelete={handleSkillDelete(skill)}
+                                                onClick={handleSkillClick(skill)}
                                                 className={classes.chip}
+                                                color='primary'
                                             />
                                         </li>
                                     );
