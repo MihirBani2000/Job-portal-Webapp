@@ -136,7 +136,7 @@ const AddJob = () => {
             data: newJob,
             headers: {
                 'Content-Type': 'application/json',
-                // 'x-auth-token': `${localStorage.getItem("Token")}`
+                'x-auth-token': `${localStorage.getItem("Token")}`
             }
         }).then((response) => {
             console.log("after submit", response.data)

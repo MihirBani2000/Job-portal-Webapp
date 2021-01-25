@@ -26,7 +26,7 @@ const NavBar = (props) => {
 
     return (
         <div>
-            <Navbar color="dark" dark expand="md">
+            <Navbar color="dark" dark expand="md" >
                 <NavbarBrand href="/">Home</NavbarBrand>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>

@@ -70,6 +70,10 @@ const JobSchema = new Schema({
         min: 0,
         max: 5,
         default: 0
+    },
+    status: {
+        type: String,
+        default: 'active'
     }
 
 },

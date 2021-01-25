@@ -21,6 +21,7 @@ import UsersList from './components/Users/UsersList'
 import Profile from './components/Users/Profile'
 // Applicant
 import ProfileApplicant from './components/Applicant/ProfileApplicant'
+import DashboardApplicant from './components/Applicant/JobsDashboardApplicant'
 // Recruiter
 import JobsRecruiter from './components/Recruiter/JobsRecruiter'
 import ProfileRecruiter from './components/Recruiter/ProfileRecruiter'
@@ -167,6 +168,13 @@ const App = () => {
               component={ProfileApplicant}
             />} />
         {/* <Route path="/applicant/jobs/addnew" component={JobsApplicant} /> */}
+        <Route exact path="/applicant/dashboard/"
+          render={
+            (props) => <EnforceLogin {...props}
+              path="/applicant/dashboard/"
+              hasProps={false}
+              component={DashboardApplicant}
+            />} />
 
         <Route exact path="/logout" render={logout} />
 
