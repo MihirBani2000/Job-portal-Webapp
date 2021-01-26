@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const auth = require('../middleware/auth')
-
+const _ = require('lodash')
 // Load models
 const Job = require("../models/Job");
 const Recruiter = require("../models/Recruiter");
@@ -11,6 +11,13 @@ const Application = require("../models/Application");
 // load validators
 const { validateJobData, validateEditJobData } = require('../validation/jobs');
 const { validateRecruiterProfile } = require("../validation/profile");
+
+async function asyncforEach(array, callback) {
+    for (let i = 0; i < array.length; i++) {
+        await callback(array[i], i);
+    }
+}
+
 
 // Get request
 // Get all the recruiters
@@ -71,20 +78,56 @@ router.put("/profile/edit", auth, (req, res) => {
 // GET request 
 // Get ALL the Jobs by recruiter
 // @Private
-router.get("/jobs/", auth, (req, res) => {
+router.get("/jobs/", auth, async (req, res) => {
     const recruiterId = req.user.id
-    Job
-        .find({ "recruiter.id": recruiterId })
+
+    await Job
+        .find({ "recruiter.id": recruiterId, status: 'active' })
         .lean()
-        .exec((err, job) => {
-            if (err) {
-                res.status(500).json(error);
-                console.log(err);
-            } else {
-                res.json(job);
+        .then((queries) => {
+            const func = async () => {
+                let jobs = []
+
+                await asyncforEach(queries, async (query) => {
+                    let job = _.cloneDeep(query)
+                    job.numRemPos = 0;
+                    job.numApp = 0;
+
+                    // num of applications
+                    let numApp = await Application
+                        .find({ jobId: query._id })
+                    numApp = numApp.length;
+                    job.numApp = numApp
+                    // num of positions left
+                    let numPos = await Application
+                        .find({ jobId: query._id, status: 'accepted' })
+                    numPos = numPos.length;
+                    job.numRemPos = query.maxPositions - numPos
+
+                    jobs.push(job);
+                })
+                res.json(jobs);
             }
+            func();
+        }).catch(err => {
+            res.status(500).json(error);
+            console.log(err);
         })
 });
+// router.get("/jobs/", auth, (req, res) => {
+//     const recruiterId = req.user.id
+//     Job
+//         .find({ "recruiter.id": recruiterId, status: 'active' })
+//         .lean()
+//         .exec((err, job) => {
+//             if (err) {
+//                 res.status(500).json(error);
+//                 console.log(err);
+//             } else {
+//                 res.json(job);
+//             }
+//         })
+// });
 
 // POST request 
 // Add a new job to db by a particular recruiter (id)
@@ -205,34 +248,6 @@ router.get("/jobs/:jobid/applications", auth, (req, res) => {
         .then(application => res.json(application))
         .catch(err => console.log(err))
 });
-
-
-// TESTING
-// GET request
-// To get all the applications on the job
-// router.get("/:id/jobs/:jobid/testing", (req, res) => {
-//     const recruiterId = req.params.id;
-//     const jobId = req.params.jobid;
-//     Job.find(
-//         { "recruiter.id": recruiterId, "_id": jobId },
-//         (err, job) => {
-//             if (err) return console.log(err)
-//             else {
-//                 // Application
-//                 //     .find({ jobId: jobId })
-//                 //     .populate('applicantId')
-//                 //     .then(application => res.json(application))
-//                 //     .catch(err => console.log(err))
-//                 res.json(job)
-//             }
-//         }
-//     );
-//     //     Application
-//     //         .find({ jobId: jobId })
-//     //         .populate('applicantId').populate('jobId')
-//     //         .then(application => res.json(application))
-//     //         .catch(err => console.log(err))
-// });
 
 // GET request
 // To get all the accepted applications on the job

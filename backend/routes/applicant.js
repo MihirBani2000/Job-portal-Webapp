@@ -126,16 +126,6 @@ router.get("/jobs/all", auth, async (req, res) => {
         .catch(err => console.log(err))
 })
 
-// router.get("/jobs/all", auth, (req, res) => {
-//     Job.find((err, job) => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             res.json(job);
-//         }
-//     })
-// });
-
 
 // POST request 
 // Add a new job to db by a particular recruiter (id)
@@ -149,13 +139,22 @@ router.post("/jobs/:jobid/apply", auth, (req, res) => {
         sop: req.body.sop,
     });
 
+    // let maxApplicants = await Job.findById(jobId)
+    //     .then((query) => {
+    //         return query.maxApplicants
+    //     }).catch(err => { throw err })
+
+    // let numApp = await Application.find({ jobId })
+    // numApp = numApp.length
+    // if (numApp < maxApplicants) {
     newApplication.save()
         .then(job => {
             res.status(200).json(job);
         })
         .catch(err => {
             res.status(400).send(err);
-        });
+        })
+    // }
 });
 
 // GET request 

@@ -62,13 +62,13 @@ const stableSort = (array, comparator) => {
 
 const headCells = [
     { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
-    { id: 'recruiter', numeric: true, disablePadding: false, label: 'Recruiter' },
+    { id: 'recruiter', numeric: false, disablePadding: false, label: 'Recruiter' },
     { id: 'salary', numeric: true, disablePadding: false, label: 'Salary' },
     { id: 'duration', numeric: true, disablePadding: false, label: 'Duration' },
-    { id: 'deadline', numeric: true, disablePadding: false, label: 'Deadline' },
-    { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
+    { id: 'deadline', numeric: false, disablePadding: false, label: 'Deadline' },
+    { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
     { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
-    { id: 'action', numeric: true, disablePadding: false, label: 'Action' },
+    { id: 'action', numeric: false, disablePadding: false, label: 'Action' },
 ];
 
 const TableTitles = (props) => {

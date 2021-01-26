@@ -41,12 +41,12 @@ const iterateOver = (array) => {
 
 const headCells = [
     { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
-    { id: 'recruiter', numeric: true, disablePadding: false, label: 'Recruiter' },
+    { id: 'recruiter', numeric: false, disablePadding: false, label: 'Recruiter' },
     { id: 'salary', numeric: true, disablePadding: false, label: 'Salary' },
     { id: 'duration', numeric: true, disablePadding: false, label: 'Duration' },
-    { id: 'date', numeric: true, disablePadding: false, label: 'Date of Join' },
-    { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
-    { id: 'status', numeric: true, disablePadding: false, label: 'Status' },
+    { id: 'date', numeric: false, disablePadding: false, label: 'Date of Join' },
+    { id: 'type', numeric: false, disablePadding: false, label: 'Type' },
+    { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
     { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
 ];
 
