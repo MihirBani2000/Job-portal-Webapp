@@ -8,7 +8,7 @@ const EnforceLogin = (props) => {
     const userType = localStorage.getItem("Type");
 
     console.log("inside EnforceLogin", userName);
-    // console.log("inside EnforceLogin", props.hasProps);
+    console.log("inside EnforceLogin - token", localStorage.getItem("Token"));
 
     if (localStorage.getItem("Token"))
         isLoggedIn = true;

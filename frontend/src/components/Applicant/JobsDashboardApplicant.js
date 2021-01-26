@@ -4,7 +4,7 @@ import Validator from 'validator';
 import _ from 'lodash';
 import axios from 'axios';
 import FuzzySearch from "fuzzy-search";
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, withStyles, ThemeProvider, lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -31,6 +31,7 @@ import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 
 const descendingComparator = (a, b, orderBy) => {
@@ -67,6 +68,7 @@ const headCells = [
     { id: 'deadline', numeric: true, disablePadding: false, label: 'Deadline' },
     { id: 'type', numeric: true, disablePadding: false, label: 'Type' },
     { id: 'rating', numeric: true, disablePadding: false, label: 'Rating' },
+    { id: 'action', numeric: true, disablePadding: false, label: 'Action' },
 ];
 
 const TableTitles = (props) => {
@@ -144,18 +146,23 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flex: '1 1 100%',
     },
+    button: {
+        marginLeft: 20
+    }
 }));
+
 
 const JobList = () => {
     const classes = useStyles();
     const userType = localStorage.getItem("Type");
-    const applicantId = localStorage.getItem("Id");
     if (userType !== 'applicant') {
         alert(`Forbidden.`);
         window.location.replace("http://localhost:3000/")
     }
+    const [sop, setSop] = useState("");
+    const [jobApplyingTo, setJobApplyingTo] = useState('');
 
-    // const [sop, setSop] = useState("");
+    const [isApplying, setIsApplying] = useState(false);
     const [jobs, setJobs] = useState([])
     const [filteredJobs, setFilteredJobs] = useState([])
     const [savedFilteredJobs, setSavedFilteredJobs] = useState([])
@@ -207,7 +214,7 @@ const JobList = () => {
                 toPush = false;
             else if (!Validator.isEmpty(jobTypeFilter) && job.typeOfJob !== jobTypeFilter)
                 toPush = false;
-            else if (!Validator.isEmpty(durationFilter.toString()) && parseInt(job.duration) > parseInt(durationFilter))
+            else if (!Validator.isEmpty(durationFilter.toString()) && parseInt(job.duration) >= parseInt(durationFilter))
                 toPush = false;
 
             if (toPush) {
@@ -215,7 +222,7 @@ const JobList = () => {
                 newJobs.push(toCopyJob);
             }
         })
-        console.log("newJobs filtered", newJobs)
+        // console.log("newJobs filtered", newJobs)
         setFilteredJobs(_.cloneDeep(newJobs));
         setIsError(false);
         setErrors({});
@@ -236,16 +243,21 @@ const JobList = () => {
         setIsApplyFilter(true)
         applyFilter(jobs)
     };
+    const onChangeSearchVal = (e) => {
+        setSearchVal(e.target.value)
+    };
     const clearSearchTitle = () => {
-        console.log("clicked clicked")
-        setFilteredJobs(_.cloneDeep(savedFilteredJobs));
-        // setIsApplyFilter(true)
-        // applyFilter(jobs)
+        console.log("clicked clicked", savedFilteredJobs)
+        setSearchVal("")
+        // if (savedFilteredJobs.length)
+        //     setFilteredJobs(_.cloneDeep(savedFilteredJobs));
+        // else
+        setFilteredJobs(_.cloneDeep(jobs))
     };
     const onSearchTitle = () => {
         console.log("searchVal", searchVal)
         setSavedFilteredJobs(_.cloneDeep(filteredJobs))
-        // setSearchVal(searchVal)
+
         if (searchVal && !Validator.isEmpty(searchVal)) {
             const searcher = new FuzzySearch(jobs, ['title'], {
                 caseSensitive: false,
@@ -254,6 +266,15 @@ const JobList = () => {
             let searchedJobs = searcher.search(searchVal)
             setFilteredJobs(_.cloneDeep(searchedJobs))
         }
+    }
+    const onApplyButton = (e) => {
+        console.log("job id to apply", e.target, e.target.parentNode)
+        if (e.target.id) {
+            setJobApplyingTo(e.target.id)
+        } else if (e.target.parentNode.id) {
+            setJobApplyingTo(e.target.parentNode.id)
+        }
+        setIsApplying(true)
     }
     const getData = () => {
         axios({
@@ -278,41 +299,51 @@ const JobList = () => {
             }
         });
     }
-    console.log("jobs", jobs)
-    console.log("FilteredJobs", filteredJobs)
-    // const getSearchData = () => {
-    //     const data = {
-    //         search: searchVal
-    //     };
-    //     axios({
-    //         method: "POST",
-    //         url: `/applicant/jobs/all`,
-    //         data: data,
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'x-auth-token': `${localStorage.getItem("Token")}`
-    //         }
-    //     }).then((response) => {
-    //         console.log("inside getSearchData", response.data)
-    //         if (isApplyFilter)
-    //             applyFilter([...response.data]);
-    //         else {
-    //             setFilteredJobs([...response.data]);
-    //             setJobs([...response.data]);
-    //         }
-    //     }).catch(error => {
-    //         if (error) {
-    //             console.log("hi newjob error", error.response);
-    //             setIsError(true);
-    //             setErrors(error.response.data);
-    //         }
-    //     });
-    // }
+    // console.log("jobs", jobs)
+    // console.log("FilteredJobs", filteredJobs)
+
+    String.prototype.countWords = function () {
+        return this.split(/\s+\b/).length;
+    }
+
+    const onChangeSop = (e) => {
+        setSop(e.target.value)
+    }
+    const onSubmitSOP = () => {
+        console.log("submiting sop")
+        const data = {
+            sop: sop
+        }
+        console.log(sop.countWords())
+        if (Validator.isEmpty(sop) || sop.countWords() > 250) {
+            alert("Please enter SOP between 1 and 250 words")
+            return
+        }
+        axios({
+            method: "POST",
+            url: `/applicant/jobs/${jobApplyingTo}/apply`,
+            data: data,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': `${localStorage.getItem("Token")}`
+            }
+        }).then((response) => {
+            alert("success")
+            setSop("");
+            setIsApplying(false)
+            setJobApplyingTo('')
+        }).catch(error => {
+            if (error) {
+                console.log(error.response.data);
+                setIsError(true);
+                alert("Error", error.response.data)
+                setErrors(error.response.data.errors);
+            }
+        });
+    }
+
 
     useEffect(getData, [])
-    // useEffect(getSearchData, [searchVal])
-
-    // useEffect(getSearchData, [searchValue])
 
     return (
         <div className={classes.root}>
@@ -342,7 +373,7 @@ const JobList = () => {
                             label="Search by Title"
                             fullWidth={false}
                             value={searchVal}
-                            onChange={(e) => setSearchVal(e.target.value)}
+                            onChange={onChangeSearchVal}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment>
@@ -365,8 +396,12 @@ const JobList = () => {
                             className={classes.textField}
                             gutterBottom
                         >
-                            Salary Range (in thousands)
-                        <Slider
+                            Salary Range
+                            <Typography
+                                align='center'
+                            // gutterBottom
+                            >(Monthly, in thousands)</Typography>
+                            <Slider
                                 min={0}
                                 max={300}
                                 step={5}
@@ -403,7 +438,6 @@ const JobList = () => {
                             onChange={onChangeDurationFilter}
                         >
                             <MenuItem value="" disabled><em>Months</em></MenuItem>
-                            <MenuItem value={0}>0 (undefined)</MenuItem>
                             <MenuItem value={1}>Till 1</MenuItem>
                             <MenuItem value={2}>Till 2</MenuItem>
                             <MenuItem value={3}>Till 3</MenuItem>
@@ -414,7 +448,65 @@ const JobList = () => {
                         </TextField>
                     </Grid>
                 </Grid>
+                {
+                    isApplying &&
+                    <>
+                        <div>
 
+                            {/* <form onSubmit={onSubmitSOP}> */}
+                            <Typography variant='h6'
+                                className={classes.button}
+                            >
+                                Apply to job
+                            </Typography>
+                            <TextField
+                                id="sop"
+                                label="Statement Of Purpose"
+                                placeholder="Something about you. Max 250 words..."
+                                fullWidth
+                                multiline
+                                rows={10}
+                                margin="normal"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                variant="outlined"
+                                className={classes.textField}
+                                value={sop}
+                                onChange={onChangeSop}
+                                disabled={!isApplying}
+                            // error={isError && errors.bio}
+                            // helperText={errors.bio}
+                            />
+                            <Button
+                                variant='contained'
+                                onClick={() => setSop('')}
+                                className={classes.button}
+
+                            >
+                                Clear
+                            </Button>
+                            <Button
+                                // type='submit'
+                                onClick={onSubmitSOP}
+                                className={classes.button}
+                                variant='contained'
+                                color='primary'
+                            >
+                                Send
+                            </Button>
+                            <Button
+                                variant='contained'
+                                className={classes.button}
+                                color='secondary'
+                                onClick={() => { setSop(""); setIsApplying(false) }}
+                            >
+                                Cancel
+                            </Button>
+                            {/* </form> */}
+                        </div>
+                    </>
+                }
 
                 <TableContainer>
                     <Table
@@ -451,6 +543,31 @@ const JobList = () => {
                                                 <TableCell align="center">{row.DOApp.substring(0, 10)}</TableCell>
                                                 <TableCell align="center">{row.typeOfJob}</TableCell>
                                                 <TableCell align="center">{row.rating}</TableCell>
+                                                {
+                                                    row.status === 'active' &&
+                                                    <TableCell align="left">
+                                                        <Button
+                                                            id={row._id}
+                                                            style={{ backgroundColor: 'green' }}
+                                                            variant='contained' size='small'
+                                                            onClick={onApplyButton}
+                                                        >
+                                                            Apply
+                                                        </Button>
+                                                    </TableCell>
+                                                }
+                                                {
+                                                    row.status === 'applied' &&
+                                                    <TableCell align="left">
+                                                        <Button disabled style={{ color: 'blue' }} variant='contained' size='small'> Applied </Button>
+                                                    </TableCell>
+                                                }
+                                                {
+                                                    row.status === 'full' &&
+                                                    <TableCell align="left">
+                                                        <Button disabled style={{ color: 'red' }} variant='contained' size='small'> Full </Button>
+                                                    </TableCell>
+                                                }
                                             </TableRow>
                                         );
                                     })

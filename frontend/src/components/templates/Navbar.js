@@ -39,23 +39,26 @@ const NavBar = (props) => {
                             <NavItem>
                                 <NavLink href="/recruiter/dashboard/">Dashboard</NavLink>
                             </NavItem>
-                            <NavItem>
+                            {/* <NavItem>
                                 <NavLink href="/users">User</NavLink>
-                            </NavItem>
+                            </NavItem> */}
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     My Jobs
                                 </DropdownToggle>
                                 <DropdownMenu right>
-                                    <DropdownItem href="/recruiter/jobs/">
+                                    {/* <DropdownItem href="/recruiter/jobs/">
                                         Show All
                                     </DropdownItem>
-                                    <DropdownItem divider />
+                                    <DropdownItem divider /> */}
                                     <DropdownItem href="/recruiter/jobs/addnew">
                                         Add New
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
+                            <NavItem>
+                                <NavLink href="#">My employees</NavLink>
+                            </NavItem>
                         </Nav>
                     }
                     {
@@ -68,7 +71,7 @@ const NavBar = (props) => {
                                 <NavLink href="/applicant/dashboard/">Dashboard</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink href="/users/">Jobs</NavLink>
+                                <NavLink href="/applicant/myApplications">My Applications</NavLink>
                             </NavItem>
                         </Nav>
                     }

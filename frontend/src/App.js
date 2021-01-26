@@ -21,10 +21,11 @@ import UsersList from './components/Users/UsersList'
 import Profile from './components/Users/Profile'
 // Applicant
 import ProfileApplicant from './components/Applicant/ProfileApplicant'
+import MyApplications from './components/Applicant/MyApplications'
 import DashboardApplicant from './components/Applicant/JobsDashboardApplicant'
 // Recruiter
-import JobsRecruiter from './components/Recruiter/JobsRecruiter'
 import ProfileRecruiter from './components/Recruiter/ProfileRecruiter'
+import JobsDashboardRecruiter from './components/Recruiter/JobsDashboardRecruiter'
 import AddJob from './components/Recruiter/AddJob'
 
 const App = () => {
@@ -132,12 +133,12 @@ const App = () => {
         {/* <Route path="/register/applicant" exact component={RegisterApplicant} /> */}
 
 
-        <Route exact path="/recruiter/jobs/"
+        <Route exact path="/recruiter/dashboard/"
           render={
             (props) => <EnforceLogin {...props}
-              path="/recruiter/jobs/"
+              path="/recruiter/dashboard/"
               hasProps={false}
-              component={JobsRecruiter}
+              component={JobsDashboardRecruiter}
             />} />
         {/* <Route path="/recruiter/jobs/addnew" component={JobsRecruiter} /> */}
 
@@ -174,6 +175,14 @@ const App = () => {
               path="/applicant/dashboard/"
               hasProps={false}
               component={DashboardApplicant}
+            />} />
+
+        <Route exact path="/applicant/myApplications/"
+          render={
+            (props) => <EnforceLogin {...props}
+              path="/applicant/myApplications/"
+              hasProps={false}
+              component={MyApplications}
             />} />
 
         <Route exact path="/logout" render={logout} />

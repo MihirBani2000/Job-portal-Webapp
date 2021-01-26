@@ -255,10 +255,14 @@ router.post("/jobs/:jobid/applications/:status", auth, (req, res) => {
     const recruiterId = req.user.id;
     const jobId = req.params.jobid;
     const newStatus = req.params.status;
-
+    let currentDate = Date.now()
     if (newStatus === "accepted") {
         Application
-            .findOneAndUpdate({ jobId: jobId, status: { $in: ["applied", "shortlisted"] } }, { status: newStatus })
+            .findOneAndUpdate(
+                { jobId, status: { $in: ["applied", "shortlisted"] } },
+                { status: newStatus, DOJ: currentDate },
+                { new: true, upsert: true }
+            )
             .then(application => res.json(application))
             .catch(err => res.json(err))
     } else if (newStatus === "shortlisted") {

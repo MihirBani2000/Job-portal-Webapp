@@ -17,6 +17,10 @@ const ApplicationSchema = new Schema({
         type: String,
         required: true
     },
+    DOJ: {
+        type: Date,
+        default: ''
+    },
     status: {
         type: String,
         default: "applied",
