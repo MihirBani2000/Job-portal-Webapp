@@ -79,7 +79,6 @@ const Login = (props) => {
         }).then((response) => {
             console.log(response)
             if (response.status === 200) {
-                // console.log("hi bitch");
                 props.attemptLogin(response.data.token);
             }
         }).catch(error => {
