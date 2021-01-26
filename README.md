@@ -29,10 +29,11 @@ npm install -g create-react-app
 ## Running the boilerplate
 
 * Run Mongo daemon:
+(I have used MongoAtlas)
+Change the `mongoURI` value in the file accordingly  
 ```
-sudo mongod
+./backend/config/default.json
 ```
-Mongo will be running on port 27017.
 
 
 * Run Express Backend:
@@ -44,10 +45,14 @@ npm start
 
 * Run React Frontend:
 ```
-cd frontend
-npm install/
+cd frontend/
+npm install
 npm start
 ```
 
 Navigate to [http://localhost:3000/](http://localhost:3000/) in your browser.
 
+
+
+Small bug:
+After login, the website shows an error, but simply Reload the page, and it works properly then(logged in)

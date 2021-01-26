@@ -332,6 +332,7 @@ const JobList = () => {
             setSop("");
             setIsApplying(false)
             setJobApplyingTo('')
+            window.location.reload()
         }).catch(error => {
             if (error) {
                 console.log(error.response.data);
