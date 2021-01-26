@@ -16,9 +16,6 @@ import Register from './components/Common/Register'
 import Landing from './components/Common/Landing'
 import RegisterRecruiter from './components/Common/RegisterRecruiter'
 import RegisterApplicant from './components/Common/RegisterApplicant'
-// Users
-import UsersList from './components/Users/UsersList'
-import Profile from './components/Users/Profile'
 // Applicant
 import ProfileApplicant from './components/Applicant/ProfileApplicant'
 import MyApplications from './components/Applicant/MyApplications'
@@ -95,8 +92,6 @@ const App = () => {
             />} />
         {/* <Route path="/" exact component={Landing} /> */}
 
-        <Route path="/users" exact component={UsersList} />
-        <Route path="/profile" component={Profile} />
         <Route path="/register" component={Register} />
 
         <Route exact path="/login"

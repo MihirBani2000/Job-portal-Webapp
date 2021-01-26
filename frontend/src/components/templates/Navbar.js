@@ -39,9 +39,6 @@ const NavBar = (props) => {
                             <NavItem>
                                 <NavLink href="/recruiter/dashboard/">Dashboard</NavLink>
                             </NavItem>
-                            {/* <NavItem>
-                                <NavLink href="/users">User</NavLink>
-                            </NavItem> */}
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     My Jobs
