@@ -79,6 +79,7 @@ const Login = (props) => {
         }).then((response) => {
             console.log(response)
             if (response.status === 200) {
+                window.location.reload()
                 props.attemptLogin(response.data.token);
             }
         }).catch(error => {
