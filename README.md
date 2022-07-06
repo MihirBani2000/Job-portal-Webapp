@@ -1,49 +1,36 @@
-# MERN Stack Boilerplate
+# Job Application Portal
 
-## Installations
+## Introduction
 
-### Node
+MERN stack to build the application:
+● React.js​ for Frontend
+● Backend Framework using ​Express JS​ implementing ​REST​ API.
+● Node.js​ for Backend Engine
+● MongoDB​ - Database
+Job Application Portal where users have the option to search and apply for various job profiles while showcasing their skillset.
+At the same time, recruiters from various companies have the ability to create job listings
+based on their requirement for various skill sets, experiences.
 
-* For Linux:
-```
-curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
+## Running the code
 
-* For Mac:
-```
-brew install node
-```
+-   Run Mongo daemon:
+    (I have used MongoAtlas)
+    Change the `mongoURI` value in the file accordingly
 
-### MongoDB
-
-Install the community edition [here](https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installation-tutorials).
-
-
-### React
-
-```
-npm install -g create-react-app
-```
-
-## Running the boilerplate
-
-* Run Mongo daemon:
-(I have used MongoAtlas)
-Change the `mongoURI` value in the file accordingly  
 ```
 ./backend/config/default.json
 ```
 
+-   Run Express Backend:
 
-* Run Express Backend:
 ```
 cd backend/
 npm install
 npm start
 ```
 
-* Run React Frontend:
+-   Run React Frontend:
+
 ```
 cd frontend/
 npm install
@@ -51,8 +38,3 @@ npm start
 ```
 
 Navigate to [http://localhost:3000/](http://localhost:3000/) in your browser.
-
-
-
-Small bug:
-After login, the website shows an error, but simply Reload the page, and it works properly then(logged in)
